@@ -1,0 +1,102 @@
+[
+    {
+        "id": "rice",
+        "name": "白米",
+        "category": "grain"
+    },
+    {
+        "id": "brown-rice",
+        "name": "糙米",
+        "category": "grain"
+    },
+    {
+        "id": "oatmeal",
+        "name": "燕麥",
+        "category": "grain"
+    },
+    {
+        "id": "millet",
+        "name": "小米",
+        "category": "grain"
+    },
+    {
+        "id": "carrot",
+        "name": "紅蘿蔔",
+        "category": "vegetable"
+    },
+    {
+        "id": "pumpkin",
+        "name": "南瓜",
+        "category": "vegetable"
+    },
+    {
+        "id": "sweet-potato",
+        "name": "地瓜",
+        "category": "vegetable"
+    },
+    {
+        "id": "spinach",
+        "name": "菠菜",
+        "category": "vegetable"
+    },
+    {
+        "id": "broccoli",
+        "name": "青花菜",
+        "category": "vegetable"
+    },
+    {
+        "id": "potato",
+        "name": "馬鈴薯",
+        "category": "vegetable"
+    },
+    {
+        "id": "onion",
+        "name": "洋蔥",
+        "category": "vegetable"
+    },
+    {
+        "id": "apple",
+        "name": "蘋果",
+        "category": "fruit"
+    },
+    {
+        "id": "banana",
+        "name": "香蕉",
+        "category": "fruit"
+    },
+    {
+        "id": "pear",
+        "name": "梨子",
+        "category": "fruit"
+    },
+    {
+        "id": "avocado",
+        "name": "酪梨",
+        "category": "fruit"
+    },
+    {
+        "id": "egg-yolk",
+        "name": "蛋黃",
+        "category": "protein"
+    },
+    {
+        "id": "chicken",
+        "name": "雞肉",
+        "category": "protein"
+    },
+    {
+        "id": "pork",
+        "name": "豬肉",
+        "category": "protein"
+    },
+    {
+        "id": "salmon",
+        "name": "鮭魚",
+        "category": "protein"
+    },
+    {
+        "id": "tofu",
+        "name": "豆腐",
+        "category": "protein"
+    }
+]

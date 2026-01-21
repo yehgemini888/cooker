@@ -1,0 +1,238 @@
+[
+    {
+        "id": "rice-porridge",
+        "title": "十倍米糊",
+        "min_month": 4,
+        "max_month": 6,
+        "ingredient_ids": [
+            "rice"
+        ],
+        "steps": [
+            "將白米洗淨後浸泡30分鐘",
+            "以1:10的米水比例放入電鍋",
+            "外鍋加2杯水煮至跳起",
+            "燜20分鐘後攪拌成糊狀",
+            "確認溫度適中後即可餵食"
+        ],
+        "nutrition_tags": [
+            "carbohydrate"
+        ],
+        "tips": "初次嘗試建議從少量開始，觀察寶寶的反應。米糊質地要非常細滑，避免顆粒。"
+    },
+    {
+        "id": "pumpkin-puree",
+        "title": "南瓜泥",
+        "min_month": 4,
+        "max_month": 6,
+        "ingredient_ids": [
+            "pumpkin"
+        ],
+        "steps": [
+            "南瓜去皮去籽，切成小塊",
+            "放入電鍋蒸至軟爛（約20分鐘）",
+            "取出壓成泥狀",
+            "可加少許開水調整濃稠度",
+            "放涼至適溫即可餵食"
+        ],
+        "nutrition_tags": [
+            "vitamin-a",
+            "fiber"
+        ],
+        "tips": "南瓜天然帶甜味，寶寶接受度通常很高。選擇金黃色的南瓜營養價值更高。"
+    },
+    {
+        "id": "carrot-puree",
+        "title": "紅蘿蔔泥",
+        "min_month": 4,
+        "max_month": 6,
+        "ingredient_ids": [
+            "carrot"
+        ],
+        "steps": [
+            "紅蘿蔔洗淨去皮，切成薄片",
+            "放入電鍋蒸至軟爛",
+            "用調理機或叉子壓成細泥",
+            "適量加入開水調整濃稠度"
+        ],
+        "nutrition_tags": [
+            "vitamin-a",
+            "fiber"
+        ],
+        "tips": "紅蘿蔔富含β-胡蘿蔔素，煮熟後更易吸收。可與米糊混合一起餵食。"
+    },
+    {
+        "id": "chicken-veggie-porridge",
+        "title": "雞肉蔬菜粥",
+        "min_month": 7,
+        "max_month": 9,
+        "ingredient_ids": [
+            "rice",
+            "chicken",
+            "carrot",
+            "broccoli"
+        ],
+        "steps": [
+            "雞胸肉切小塊，川燙去血水",
+            "紅蘿蔔、青花菜洗淨切小塊",
+            "白米與所有食材放入電鍋",
+            "加7倍水煮成粥",
+            "取出後用調理棒打成適合月齡的質地"
+        ],
+        "nutrition_tags": [
+            "protein",
+            "vitamin-a",
+            "vitamin-c",
+            "iron"
+        ],
+        "tips": "雞肉是優質蛋白質來源，建議先從雞胸肉開始嘗試。"
+    },
+    {
+        "id": "apple-oatmeal",
+        "title": "蘋果燕麥糊",
+        "min_month": 7,
+        "max_month": 9,
+        "ingredient_ids": [
+            "oatmeal",
+            "apple"
+        ],
+        "steps": [
+            "蘋果去皮去核，切成小塊",
+            "燕麥片加水煮至軟爛",
+            "蘋果蒸熟後壓成泥",
+            "將蘋果泥拌入燕麥糊中",
+            "攪拌均勻即可餵食"
+        ],
+        "nutrition_tags": [
+            "fiber",
+            "vitamin-c",
+            "carbohydrate"
+        ],
+        "tips": "選用即食燕麥片較好消化。蘋果建議選用甜度較高的品種。"
+    },
+    {
+        "id": "sweet-potato-puree",
+        "title": "地瓜泥",
+        "min_month": 7,
+        "max_month": 9,
+        "ingredient_ids": [
+            "sweet-potato"
+        ],
+        "steps": [
+            "地瓜洗淨，整顆放入電鍋蒸熟",
+            "去皮後壓成泥狀",
+            "加少許開水調整濃稠度",
+            "確認無顆粒後即可餵食"
+        ],
+        "nutrition_tags": [
+            "fiber",
+            "vitamin-a",
+            "carbohydrate"
+        ],
+        "tips": "地瓜富含膳食纖維，有助於寶寶腸胃蠕動。選擇橙色地瓜營養更豐富。"
+    },
+    {
+        "id": "salmon-veggie-porridge",
+        "title": "鮭魚蔬菜粥",
+        "min_month": 10,
+        "max_month": 12,
+        "ingredient_ids": [
+            "rice",
+            "salmon",
+            "spinach",
+            "carrot"
+        ],
+        "steps": [
+            "鮭魚去骨去皮，蒸熟後壓碎",
+            "菠菜洗淨切碎，川燙後瀝乾",
+            "紅蘿蔔切小丁蒸熟",
+            "白米煮成5倍粥",
+            "將所有食材拌入粥中"
+        ],
+        "nutrition_tags": [
+            "omega-3",
+            "protein",
+            "iron",
+            "vitamin-a"
+        ],
+        "tips": "鮭魚富含Omega-3脂肪酸，對寶寶大腦發育很有幫助。務必確認無魚刺。"
+    },
+    {
+        "id": "chicken-noodle-soup",
+        "title": "雞肉蔬菜麵",
+        "min_month": 10,
+        "max_month": 12,
+        "ingredient_ids": [
+            "chicken",
+            "carrot",
+            "broccoli",
+            "onion"
+        ],
+        "steps": [
+            "雞胸肉切絲，川燙備用",
+            "蔬菜切小丁，煮軟",
+            "寶寶麵條煮至軟爛",
+            "將雞肉、蔬菜與麵條拌勻",
+            "可加少許高湯提味"
+        ],
+        "nutrition_tags": [
+            "protein",
+            "vitamin-a",
+            "vitamin-c",
+            "carbohydrate"
+        ],
+        "tips": "選用寶寶專用麵條，較容易咀嚼消化。可依寶寶月齡調整食材大小。"
+    },
+    {
+        "id": "tofu-egg-porridge",
+        "title": "豆腐蛋黃粥",
+        "min_month": 10,
+        "max_month": 12,
+        "ingredient_ids": [
+            "rice",
+            "tofu",
+            "egg-yolk",
+            "spinach"
+        ],
+        "steps": [
+            "嫩豆腐切小塊備用",
+            "蛋黃蒸熟後壓碎",
+            "菠菜川燙切碎",
+            "白米煮成5倍粥",
+            "加入豆腐、蛋黃、菠菜拌勻"
+        ],
+        "nutrition_tags": [
+            "protein",
+            "calcium",
+            "iron",
+            "vitamin-a"
+        ],
+        "tips": "豆腐與蛋黃都是優質蛋白質來源，搭配綠葉蔬菜營養更均衡。"
+    },
+    {
+        "id": "mixed-veggie-porridge",
+        "title": "什錦蔬菜粥",
+        "min_month": 10,
+        "max_month": 12,
+        "ingredient_ids": [
+            "rice",
+            "carrot",
+            "pumpkin",
+            "broccoli",
+            "potato"
+        ],
+        "steps": [
+            "所有蔬菜洗淨切小丁",
+            "蔬菜放入電鍋蒸軟",
+            "白米煮成5倍粥",
+            "將蔬菜拌入粥中",
+            "依寶寶能力調整顆粒大小"
+        ],
+        "nutrition_tags": [
+            "vitamin-a",
+            "vitamin-c",
+            "fiber",
+            "carbohydrate"
+        ],
+        "tips": "多樣蔬菜搭配可以讓寶寶嚐試不同口味，培養不挑食的好習慣。"
+    }
+]
