@@ -135,9 +135,10 @@ function goToIngredient(id: string) {
               :class="pantryStore.hasItem(id) ? 'ring-green-400' : 'ring-gray-200'"
             >
               <img
-                :src="getIngredientInfo(id).imageUrl || 'https://placehold.co/100x100?text=Food'"
+                :src="getIngredientInfo(id).imageUrl || 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'"
                 :alt="getIngredientInfo(id).name"
                 class="w-full h-full object-cover"
+                @error="$event.target.src = 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'"
               />
             </div>
             

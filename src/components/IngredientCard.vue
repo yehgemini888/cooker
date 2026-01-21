@@ -125,6 +125,7 @@ function handleClick() {
         :alt="ingredient.name"
         class="w-full h-full object-cover rounded-xl"
         loading="lazy"
+        @error="$event.target.src = 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'"
       />
     </div>
 

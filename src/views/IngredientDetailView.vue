@@ -128,9 +128,10 @@ function goToRecipe(recipeId: string) {
       <!-- 食材大圖 -->
       <div class="h-64 bg-gradient-to-br from-gray-200 to-gray-300 relative overflow-hidden">
         <img
-          :src="ingredient.imageUrl || 'https://placehold.co/800x400?text=Food'"
+          :src="ingredient.imageUrl || 'https://placehold.co/800x400/e2e8f0/64748b?text=Food'"
           :alt="ingredient.name"
           class="w-full h-full object-cover"
+          @error="$event.target.src = 'https://placehold.co/800x400/e2e8f0/64748b?text=Food'"
         />
         <!-- 漸層遮罩 -->
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
