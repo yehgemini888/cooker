@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useFoodStore } from '@/stores/food'
 import { useUserStore } from '@/stores/user'
 import { usePantryStore } from '@/stores/pantry'
+import { getIngredientImageUrl as getLocalImageUrl, hasLocalImage } from '@/composables/useIngredientImage'
 import type { Ingredient, Recipe } from '@/types'
 
 const route = useRoute()
@@ -33,6 +34,17 @@ function getIngredientInfo(id: string): Ingredient {
     category: 'other',
     imageUrl: 'https://placehold.co/200x200?text=Food',
   }
+}
+
+// Helper: 取得食材圖片 URL（優先使用本地圖片）
+function getIngredientImageUrl(id: string): string {
+  // 優先使用本地圖片
+  if (hasLocalImage(id)) {
+    return getLocalImageUrl(id)
+  }
+  // Fallback 到 JSON 中的 URL 或預設圖片
+  const ingredient = getIngredientInfo(id)
+  return ingredient.imageUrl || 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'
 }
 
 // 是否已收藏
@@ -131,13 +143,13 @@ function goToIngredient(id: string) {
           >
             <!-- 食材圖片 -->
             <div
-              class="w-14 h-14 rounded-xl overflow-hidden mb-1 ring-2"
+              class="w-14 h-14 rounded-xl overflow-hidden mb-1 ring-2 bg-white"
               :class="pantryStore.hasItem(id) ? 'ring-green-400' : 'ring-gray-200'"
             >
               <img
-                :src="getIngredientInfo(id).imageUrl || 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'"
+                :src="getIngredientImageUrl(id)"
                 :alt="getIngredientInfo(id).name"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-contain"
                 @error="$event.target.src = 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'"
               />
             </div>
