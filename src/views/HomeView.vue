@@ -121,24 +121,31 @@ function getCategoryColor(category: string): string {
 
     <!-- 快捷入口 -->
     <div class="container mx-auto px-4 -mt-6">
-      <div class="grid grid-cols-3 gap-3">
+      <div class="grid grid-cols-4 gap-2">
         <RouterLink
-          to="/profile"
-          class="bg-white rounded-xl shadow-md p-4 text-center hover:shadow-lg transition-all"
+          to="/pantry"
+          class="bg-white rounded-xl shadow-md p-3 text-center hover:shadow-lg transition-all"
         >
           <div class="text-2xl mb-1">🥕</div>
-          <p class="text-xs text-gray-600">食材護照</p>
+          <p class="text-xs text-gray-600">食材圖鑑</p>
+        </RouterLink>
+        <RouterLink
+          to="/profile"
+          class="bg-white rounded-xl shadow-md p-3 text-center hover:shadow-lg transition-all"
+        >
+          <div class="text-2xl mb-1">📋</div>
+          <p class="text-xs text-gray-600">護照</p>
         </RouterLink>
         <RouterLink
           to="/recipes"
-          class="bg-white rounded-xl shadow-md p-4 text-center hover:shadow-lg transition-all"
+          class="bg-white rounded-xl shadow-md p-3 text-center hover:shadow-lg transition-all"
         >
           <div class="text-2xl mb-1">📖</div>
-          <p class="text-xs text-gray-600">智慧食譜</p>
+          <p class="text-xs text-gray-600">食譜</p>
         </RouterLink>
         <RouterLink
           to="/wizard"
-          class="bg-white rounded-xl shadow-md p-4 text-center hover:shadow-lg transition-all"
+          class="bg-white rounded-xl shadow-md p-3 text-center hover:shadow-lg transition-all"
         >
           <div class="text-2xl mb-1">📅</div>
           <p class="text-xs text-gray-600">週計畫</p>

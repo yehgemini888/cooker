@@ -19,6 +19,18 @@ export interface Ingredient {
     name: string;
     /** 食材分類 */
     category: IngredientCategory;
+    /** 食材圖片路徑 */
+    imageUrl?: string;
+    /** 營養價值重點說明 */
+    nutrition_highlight?: string;
+    /** 醫師臨床觀察 */
+    doctor_note?: string;
+    /** 挑選指南 */
+    picking_guide?: string;
+    /** 調理機攻略 */
+    processing_guide?: string;
+    /** 是否為高過敏源 */
+    allergy_risk?: boolean;
 }
 
 /**
@@ -30,9 +42,12 @@ export type NutritionTag =
     | 'protein'        // 蛋白質
     | 'vitamin-a'      // 維生素A
     | 'vitamin-c'      // 維生素C
+    | 'vitamin-b'      // 維生素B群
     | 'fiber'          // 膳食纖維
     | 'carbohydrate'   // 碳水化合物
-    | 'omega-3';       // Omega-3
+    | 'omega-3'        // Omega-3
+    | 'zinc'           // 鋅
+    | 'potassium';     // 鉀
 
 /**
  * 食譜介面定義
@@ -54,6 +69,12 @@ export interface Recipe {
     nutrition_tags: NutritionTag[];
     /** 小提示 */
     tips: string;
+    /** 食譜圖片路徑 (optional) */
+    imageUrl?: string;
+    /** 預估烹調時間 (分鐘, optional) */
+    cooking_time?: number;
+    /** 難易度 (optional) */
+    difficulty?: 'easy' | 'medium' | 'hard';
 }
 
 /**

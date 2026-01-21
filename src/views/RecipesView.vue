@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useSmartRecipes, type ScoredRecipe } from '@/composables/useSmartRecipes'
 import { useFoodStore } from '@/stores/food'
 import { useUserStore } from '@/stores/user'
 import { usePantryStore } from '@/stores/pantry'
 
+const router = useRouter()
 const { scoredRecipes, recommendedRecipes } = useSmartRecipes()
 const foodStore = useFoodStore()
 const userStore = useUserStore()
@@ -16,7 +18,7 @@ const viewMode = ref<'all' | 'recommended' | 'favorites'>('recommended')
 // 冰箱面板展開狀態
 const isPantryOpen = ref(false)
 
-// 選中的食譜詳情
+// 選中的食譜詳情 (保留用於 Modal 備用)
 const selectedRecipe = ref<ScoredRecipe | null>(null)
 
 // 根據顯示模式過濾食譜
@@ -56,12 +58,12 @@ function getCategoryColor(category: string): string {
   return colors[category] || 'bg-gray-100 text-gray-800'
 }
 
-// 開啟食譜詳情
+// 導航到食譜詳情頁
 function openRecipeDetail(sr: ScoredRecipe) {
-  selectedRecipe.value = sr
+  router.push(`/recipe/${sr.recipe.id}`)
 }
 
-// 關閉食譜詳情
+// 關閉食譜詳情 (備用)
 function closeRecipeDetail() {
   selectedRecipe.value = null
 }

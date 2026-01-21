@@ -2,101 +2,1035 @@
     {
         "id": "rice",
         "name": "白米",
-        "category": "grain"
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=Rice",
+        "nutrition_highlight": "主要提供碳水化合物，是寶寶副食品的最佳入門食材，易消化且低過敏性。",
+        "doctor_note": "白米是最安全的副食品起步食材，幾乎不會引起過敏反應。建議從十倍粥開始。",
+        "picking_guide": "選擇新鮮、無異味的白米，建議使用台灣在地米。",
+        "processing_guide": "用調理機打成細緻米糊，初期需過篩確保無顆粒。",
+        "allergy_risk": false
     },
     {
         "id": "brown-rice",
         "name": "糙米",
-        "category": "grain"
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=BrownRice",
+        "nutrition_highlight": "富含維生素B群、膳食纖維及礦物質，營養價值高於白米。",
+        "doctor_note": "糙米纖維較多，建議7個月後再嘗試，且需煮得更軟爛。",
+        "picking_guide": "選擇完整無破損的糙米，新鮮糙米帶有淡淡米香。",
+        "processing_guide": "需浸泡4小時以上，煮後用調理機打成泥。",
+        "allergy_risk": false
     },
     {
         "id": "oatmeal",
         "name": "燕麥",
-        "category": "grain"
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=Oatmeal",
+        "nutrition_highlight": "富含水溶性纖維β-葡聚醣，有助於腸道健康和免疫力。",
+        "doctor_note": "燕麥含有麩質，若家族有麩質過敏史需謹慎。建議6個月後少量嘗試。",
+        "picking_guide": "選擇無添加糖的純燕麥片，即食燕麥較適合寶寶。",
+        "processing_guide": "煮軟後直接壓成泥，或用調理機打成糊狀。",
+        "allergy_risk": true
     },
     {
         "id": "millet",
         "name": "小米",
-        "category": "grain"
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=Millet",
+        "nutrition_highlight": "富含鐵質和維生素B群，是傳統坐月子的補氣食材。",
+        "doctor_note": "小米性溫和，適合脾胃較弱的寶寶，不易引起消化不適。",
+        "picking_guide": "選擇金黃色、顆粒飽滿的小米，避免有霉味。",
+        "processing_guide": "煮成粥後攪打成細緻泥狀，可與白米混合。",
+        "allergy_risk": false
     },
     {
         "id": "carrot",
         "name": "紅蘿蔔",
-        "category": "vegetable"
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Carrot",
+        "nutrition_highlight": "富含β-胡蘿蔔素，可在體內轉化為維生素A，有益視力發育。",
+        "doctor_note": "攝取過多可能造成皮膚暫時偏黃（胡蘿蔔素血症），屬正常現象不需擔心。",
+        "picking_guide": "選擇表皮光滑、顏色鮮橙、硬實無裂痕的紅蘿蔔。",
+        "processing_guide": "蒸熟後容易攪打，建議切小塊蒸15-20分鐘。",
+        "allergy_risk": false
     },
     {
         "id": "pumpkin",
         "name": "南瓜",
-        "category": "vegetable"
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Pumpkin",
+        "nutrition_highlight": "富含β-胡蘿蔔素、維生素C和膳食纖維，天然甜味寶寶愛。",
+        "doctor_note": "南瓜是低過敏性蔬菜，4個月即可開始嘗試，接受度通常很高。",
+        "picking_guide": "選擇外皮完整、蒂頭乾燥的南瓜，敲擊聲音沈悶表示成熟。",
+        "processing_guide": "去皮去籽後蒸熟，用叉子即可輕鬆壓成泥。",
+        "allergy_risk": false
     },
     {
         "id": "sweet-potato",
         "name": "地瓜",
-        "category": "vegetable"
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=SweetPotato",
+        "nutrition_highlight": "富含膳食纖維和β-胡蘿蔔素，有助於腸胃蠕動和排便順暢。",
+        "doctor_note": "地瓜容易脹氣，初期少量給予，觀察寶寶消化情況。",
+        "picking_guide": "選擇表皮完整、無發芽、無黑斑的地瓜。",
+        "processing_guide": "整顆蒸熟後去皮壓泥，纖維較多需確認打得細緻。",
+        "allergy_risk": false
     },
     {
         "id": "spinach",
         "name": "菠菜",
-        "category": "vegetable"
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Spinach",
+        "nutrition_highlight": "富含鐵質、葉酸和維生素K，是綠葉蔬菜的營養代表。",
+        "doctor_note": "菠菜含草酸，建議川燙後再給寶寶食用，可減少草酸含量。",
+        "picking_guide": "選擇葉片翠綠、無黃葉、根部粉紅的新鮮菠菜。",
+        "processing_guide": "川燙30秒後切碎，用調理機打成泥加入粥中。",
+        "allergy_risk": false
     },
     {
         "id": "broccoli",
         "name": "青花菜",
-        "category": "vegetable"
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Broccoli",
+        "nutrition_highlight": "富含維生素C、葉酸和膳食纖維，被譽為超級蔬菜。",
+        "doctor_note": "青花菜較易脹氣，建議少量開始，可與其他蔬菜混合。",
+        "picking_guide": "選擇花球緊密、深綠色、無黃花的青花菜。",
+        "processing_guide": "只取花球部分，蒸熟後打成泥。莖部纖維較多可留給大人。",
+        "allergy_risk": false
     },
     {
         "id": "potato",
         "name": "馬鈴薯",
-        "category": "vegetable"
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Potato",
+        "nutrition_highlight": "富含澱粉質和鉀，可作為米粥的替代主食。",
+        "doctor_note": "馬鈴薯屬茄科植物，極少數寶寶可能過敏，首次嘗試需觀察。",
+        "picking_guide": "選擇表皮完整、無發芽、無綠色的馬鈴薯。發芽處含龍葵鹼有毒。",
+        "processing_guide": "去皮切塊蒸熟，用叉子壓成泥即可。",
+        "allergy_risk": false
     },
     {
         "id": "onion",
         "name": "洋蔥",
-        "category": "vegetable"
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Onion",
+        "nutrition_highlight": "含有機硫化物和槲皮素，有助於提升免疫力。",
+        "doctor_note": "洋蔥味道較重，建議少量混入其他食物中增添風味。",
+        "picking_guide": "選擇外皮乾燥、硬實、無發芽的洋蔥。",
+        "processing_guide": "切碎煮軟後混入粥中，可增加食物香氣。",
+        "allergy_risk": false
     },
     {
         "id": "apple",
         "name": "蘋果",
-        "category": "fruit"
+        "category": "fruit",
+        "imageUrl": "https://placehold.co/200x200?text=Apple",
+        "nutrition_highlight": "富含果膠和維生素C，有助於腸道健康。",
+        "doctor_note": "蘋果泥有助於改善輕微腹瀉，是很好的調理水果。",
+        "picking_guide": "選擇表皮光滑、無碰傷、果蒂新鮮的蘋果。",
+        "processing_guide": "去皮去核後蒸熟或直接磨泥，生熟皆可。",
+        "allergy_risk": false
     },
     {
         "id": "banana",
         "name": "香蕉",
-        "category": "fruit"
+        "category": "fruit",
+        "imageUrl": "https://placehold.co/200x200?text=Banana",
+        "nutrition_highlight": "富含鉀和維生素B6，提供即時能量，易消化。",
+        "doctor_note": "香蕉熟成度影響消化：偏綠止瀉、偏黃通便，依寶寶狀況選擇。",
+        "picking_guide": "選擇表皮無黑斑、黃色均勻的香蕉，過熟糖分較高。",
+        "processing_guide": "直接用叉子壓成泥即可，是最方便的外出水果。",
+        "allergy_risk": false
     },
     {
         "id": "pear",
         "name": "梨子",
-        "category": "fruit"
+        "category": "fruit",
+        "imageUrl": "https://placehold.co/200x200?text=Pear",
+        "nutrition_highlight": "富含膳食纖維和水分，有助於潤腸通便。",
+        "doctor_note": "梨子性涼，寒性體質寶寶建議蒸熟後食用。",
+        "picking_guide": "選擇果皮光滑、輕按有彈性的梨子。",
+        "processing_guide": "去皮去核後蒸熟磨泥，或生梨直接打成泥。",
+        "allergy_risk": false
     },
     {
         "id": "avocado",
         "name": "酪梨",
-        "category": "fruit"
+        "category": "fruit",
+        "imageUrl": "https://placehold.co/200x200?text=Avocado",
+        "nutrition_highlight": "富含優質脂肪酸和維生素E，有益大腦發育。",
+        "doctor_note": "酪梨營養密度高，是素食寶寶的優質脂肪來源。",
+        "picking_guide": "選擇輕按有彈性、蒂頭為綠色的酪梨表示熟成適中。",
+        "processing_guide": "切開去核，用湯匙挖出果肉直接壓泥即可。",
+        "allergy_risk": false
     },
     {
         "id": "egg-yolk",
         "name": "蛋黃",
-        "category": "protein"
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=EggYolk",
+        "nutrition_highlight": "富含卵磷脂、鐵質和維生素D，是優質蛋白質來源。",
+        "doctor_note": "蛋黃較蛋白安全，建議7個月後嘗試。蛋白建議1歲後。",
+        "picking_guide": "選擇新鮮有機雞蛋，蛋黃顏色金黃者營養較佳。",
+        "processing_guide": "水煮至全熟後取出蛋黃，壓碎混入粥中。",
+        "allergy_risk": true
     },
     {
         "id": "chicken",
         "name": "雞肉",
-        "category": "protein"
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Chicken",
+        "nutrition_highlight": "優質蛋白質來源，脂肪含量低，富含維生素B群。",
+        "doctor_note": "建議從雞胸肉開始，纖維細緻易消化。7個月後可嘗試。",
+        "picking_guide": "選擇肉色粉紅、無異味、彈性佳的新鮮雞肉。",
+        "processing_guide": "切小塊蒸熟，用調理機打成細緻肉泥。",
+        "allergy_risk": false
     },
     {
         "id": "pork",
         "name": "豬肉",
-        "category": "protein"
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Pork",
+        "nutrition_highlight": "富含鐵質、鋅和維生素B1，是重要的鐵質補充來源。",
+        "doctor_note": "豬肉含鐵量高，可幫助預防寶寶缺鐵性貧血。",
+        "picking_guide": "選擇肉色鮮紅、脂肪白色、無異味的豬里肌。",
+        "processing_guide": "選瘦肉部位，蒸熟後打成細緻肉泥。",
+        "allergy_risk": false
     },
     {
         "id": "salmon",
         "name": "鮭魚",
-        "category": "protein"
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Salmon",
+        "nutrition_highlight": "富含Omega-3脂肪酸(DHA/EPA)，對大腦和視力發育極佳。",
+        "doctor_note": "深海魚類可能含重金屬，建議選擇可靠來源，每週不超過2次。",
+        "picking_guide": "選擇肉色橙紅、紋路清晰、無腥味的鮭魚。",
+        "processing_guide": "蒸熟後仔細去骨去皮，用叉子撥散成細絲。",
+        "allergy_risk": true
     },
     {
         "id": "tofu",
         "name": "豆腐",
-        "category": "protein"
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Tofu",
+        "nutrition_highlight": "優質植物性蛋白質，富含鈣質和大豆異黃酮。",
+        "doctor_note": "黃豆製品可能引起過敏，建議8個月後少量嘗試。",
+        "picking_guide": "選擇嫩豆腐或絹豆腐，質地較適合寶寶。",
+        "processing_guide": "直接壓碎混入粥中，或蒸熱後壓泥。",
+        "allergy_risk": true
+    },
+    {
+        "id": "purple-rice",
+        "name": "紫米",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=PurpleRice",
+        "nutrition_highlight": "富含花青素和膳食纖維",
+        "doctor_note": "需煮至非常軟爛",
+        "picking_guide": "選擇顆粒飽滿有光澤",
+        "processing_guide": "浸泡4小時後煮粥",
+        "allergy_risk": false
+    },
+    {
+        "id": "glutinous-rice",
+        "name": "糯米",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=GlutinousRice",
+        "nutrition_highlight": "碳水化合物來源，黏性較高",
+        "doctor_note": "較難消化，少量使用",
+        "picking_guide": "選擇白色飽滿顆粒",
+        "processing_guide": "浸泡後蒸熟",
+        "allergy_risk": false
+    },
+    {
+        "id": "barley",
+        "name": "薏仁",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=Barley",
+        "nutrition_highlight": "富含蛋白質和膳食纖維",
+        "doctor_note": "性涼，脾胃虛弱者少量",
+        "picking_guide": "選擇顆粒完整無黑點",
+        "processing_guide": "浸泡煮至軟爛",
+        "allergy_risk": false
+    },
+    {
+        "id": "rice-noodle",
+        "name": "米粉",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=RiceNoodle",
+        "nutrition_highlight": "米製品，易消化",
+        "doctor_note": "無麩質，適合過敏寶寶",
+        "picking_guide": "選純米製無添加",
+        "processing_guide": "泡軟後煮熟剪短",
+        "allergy_risk": false
+    },
+    {
+        "id": "udon",
+        "name": "烏龍麵",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=Udon",
+        "nutrition_highlight": "碳水化合物，口感Q彈",
+        "doctor_note": "含麩質，過敏者避免",
+        "picking_guide": "選無鹽嬰兒麵條",
+        "processing_guide": "煮軟後剪成小段",
+        "allergy_risk": true
+    },
+    {
+        "id": "pasta",
+        "name": "義大利麵",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=Pasta",
+        "nutrition_highlight": "碳水化合物來源",
+        "doctor_note": "含麩質",
+        "picking_guide": "選小型貝殼麵或通心粉",
+        "processing_guide": "煮至非常軟爛",
+        "allergy_risk": true
+    },
+    {
+        "id": "noodle",
+        "name": "麵條",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=Noodle",
+        "nutrition_highlight": "碳水化合物來源",
+        "doctor_note": "含麩質",
+        "picking_guide": "選無鹽寶寶麵",
+        "processing_guide": "煮軟剪短",
+        "allergy_risk": true
+    },
+    {
+        "id": "glass-noodle",
+        "name": "冬粉",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=GlassNoodle",
+        "nutrition_highlight": "低熱量，易消化",
+        "doctor_note": "綠豆製成",
+        "picking_guide": "選純綠豆粉絲",
+        "processing_guide": "泡軟煮熟剪短",
+        "allergy_risk": false
+    },
+    {
+        "id": "flour",
+        "name": "麵粉",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=Flour",
+        "nutrition_highlight": "烘焙原料",
+        "doctor_note": "含麩質",
+        "picking_guide": "選低筋或中筋麵粉",
+        "processing_guide": "用於煎餅烘焙",
+        "allergy_risk": true
+    },
+    {
+        "id": "rice-flour",
+        "name": "在來米粉",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=RiceFlour",
+        "nutrition_highlight": "米製粉，無麩質",
+        "doctor_note": "適合麩質過敏",
+        "picking_guide": "選純在來米粉",
+        "processing_guide": "調糊蒸煮",
+        "allergy_risk": false
+    },
+    {
+        "id": "bread",
+        "name": "吐司",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=Bread",
+        "nutrition_highlight": "碳水化合物來源",
+        "doctor_note": "含麩質，選無添加款",
+        "picking_guide": "選全麥無糖吐司",
+        "processing_guide": "去邊蒸軟或煎香",
+        "allergy_risk": true
+    },
+    {
+        "id": "mantou",
+        "name": "饅頭",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=Mantou",
+        "nutrition_highlight": "碳水化合物來源",
+        "doctor_note": "含麩質",
+        "picking_guide": "選原味無糖饅頭",
+        "processing_guide": "蒸軟切片",
+        "allergy_risk": true
+    },
+    {
+        "id": "wonton-wrapper",
+        "name": "餛飩皮",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=WontonWrapper",
+        "nutrition_highlight": "麵粉製品",
+        "doctor_note": "含麩質",
+        "picking_guide": "選新鮮薄皮",
+        "processing_guide": "包餡煮熟",
+        "allergy_risk": true
+    },
+    {
+        "id": "tortilla",
+        "name": "捲餅皮",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=Tortilla",
+        "nutrition_highlight": "碳水化合物",
+        "doctor_note": "選無添加款",
+        "picking_guide": "選全麥或玉米餅皮",
+        "processing_guide": "包餡料捲起",
+        "allergy_risk": false
+    },
+    {
+        "id": "bread-crumb",
+        "name": "麵包粉",
+        "category": "grain",
+        "imageUrl": "https://placehold.co/200x200?text=BreadCrumb",
+        "nutrition_highlight": "裹粉用",
+        "doctor_note": "含麩質",
+        "picking_guide": "選無添加麵包粉",
+        "processing_guide": "裹粉後烤箱烘烤",
+        "allergy_risk": true
+    },
+    {
+        "id": "cauliflower",
+        "name": "白花椰菜",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Cauliflower",
+        "nutrition_highlight": "富含維生素C和膳食纖維",
+        "doctor_note": "比青花菜更好消化",
+        "picking_guide": "選擇花球緊密潔白",
+        "processing_guide": "蒸熟打成泥",
+        "allergy_risk": false
+    },
+    {
+        "id": "komatsuna",
+        "name": "小松菜",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Komatsuna",
+        "nutrition_highlight": "富含鈣質和鐵質",
+        "doctor_note": "鈣質比牛奶高",
+        "picking_guide": "選葉片翠綠",
+        "processing_guide": "川燙後打泥",
+        "allergy_risk": false
+    },
+    {
+        "id": "bok-choy",
+        "name": "青江菜",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=BokChoy",
+        "nutrition_highlight": "富含維生素A和鈣質",
+        "doctor_note": "味道清淡好接受",
+        "picking_guide": "選梗白葉綠",
+        "processing_guide": "川燙切碎",
+        "allergy_risk": false
+    },
+    {
+        "id": "amaranth",
+        "name": "莧菜",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Amaranth",
+        "nutrition_highlight": "富含鐵質和鈣質",
+        "doctor_note": "紅莧菜鐵質更高",
+        "picking_guide": "選葉片鮮嫩",
+        "processing_guide": "川燙打泥",
+        "allergy_risk": false
+    },
+    {
+        "id": "cabbage",
+        "name": "高麗菜",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Cabbage",
+        "nutrition_highlight": "富含維生素C和K",
+        "doctor_note": "味道清甜好接受",
+        "picking_guide": "選葉片緊實有重量",
+        "processing_guide": "切碎煮軟",
+        "allergy_risk": false
+    },
+    {
+        "id": "corn",
+        "name": "玉米",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Corn",
+        "nutrition_highlight": "富含葉黃素和膳食纖維",
+        "doctor_note": "需過篩去皮",
+        "picking_guide": "選顆粒飽滿金黃",
+        "processing_guide": "蒸熟打泥過篩",
+        "allergy_risk": false
+    },
+    {
+        "id": "tomato",
+        "name": "番茄",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Tomato",
+        "nutrition_highlight": "富含茄紅素和維生素C",
+        "doctor_note": "去皮去籽更好消化",
+        "picking_guide": "選熟透鮮紅",
+        "processing_guide": "燙去皮打泥",
+        "allergy_risk": false
+    },
+    {
+        "id": "winter-melon",
+        "name": "冬瓜",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=WinterMelon",
+        "nutrition_highlight": "清熱利濕，水分高",
+        "doctor_note": "夏天消暑食材",
+        "picking_guide": "選皮硬肉白",
+        "processing_guide": "去皮蒸熟壓泥",
+        "allergy_risk": false
+    },
+    {
+        "id": "luffa",
+        "name": "絲瓜",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Luffa",
+        "nutrition_highlight": "富含維生素C",
+        "doctor_note": "選嫩絲瓜",
+        "picking_guide": "選表皮光滑嫩綠",
+        "processing_guide": "去皮煮軟",
+        "allergy_risk": false
+    },
+    {
+        "id": "beetroot",
+        "name": "甜菜根",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Beetroot",
+        "nutrition_highlight": "富含鐵質和葉酸",
+        "doctor_note": "便便變紅屬正常",
+        "picking_guide": "選表皮光滑硬實",
+        "processing_guide": "蒸熟去皮打泥",
+        "allergy_risk": false
+    },
+    {
+        "id": "black-fungus",
+        "name": "黑木耳",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=BlackFungus",
+        "nutrition_highlight": "富含膳食纖維和鐵質",
+        "doctor_note": "需打非常細",
+        "picking_guide": "選乾燥完整",
+        "processing_guide": "泡軟煮熟打細泥",
+        "allergy_risk": false
+    },
+    {
+        "id": "okra",
+        "name": "秋葵",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Okra",
+        "nutrition_highlight": "富含膳食纖維",
+        "doctor_note": "黏液助消化",
+        "picking_guide": "選嫩綠細小",
+        "processing_guide": "川燙切碎",
+        "allergy_risk": false
+    },
+    {
+        "id": "zucchini",
+        "name": "櫛瓜",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Zucchini",
+        "nutrition_highlight": "富含維生素C和水分",
+        "doctor_note": "清爽好消化",
+        "picking_guide": "選表皮光滑硬實",
+        "processing_guide": "刨絲煎餅",
+        "allergy_risk": false
+    },
+    {
+        "id": "radish",
+        "name": "白蘿蔔",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Radish",
+        "nutrition_highlight": "助消化，維生素C",
+        "doctor_note": "煮熟後較不會脹氣",
+        "picking_guide": "選白色硬實有重量",
+        "processing_guide": "刨絲煮軟",
+        "allergy_risk": false
+    },
+    {
+        "id": "taro",
+        "name": "芋頭",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Taro",
+        "nutrition_highlight": "碳水化合物，膳食纖維",
+        "doctor_note": "綿密香甜",
+        "picking_guide": "選硬實無黑點",
+        "processing_guide": "蒸熟壓泥",
+        "allergy_risk": false
+    },
+    {
+        "id": "yam",
+        "name": "山藥",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Yam",
+        "nutrition_highlight": "助消化，黏液蛋白",
+        "doctor_note": "養胃食材",
+        "picking_guide": "選表皮完整",
+        "processing_guide": "去皮蒸熟",
+        "allergy_risk": false
+    },
+    {
+        "id": "bell-pepper",
+        "name": "甜椒",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=BellPepper",
+        "nutrition_highlight": "富含維生素C",
+        "doctor_note": "維生素C助鐵吸收",
+        "picking_guide": "選表皮光滑飽滿",
+        "processing_guide": "去皮去籽煮軟",
+        "allergy_risk": false
+    },
+    {
+        "id": "kelp",
+        "name": "海帶芽",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Kelp",
+        "nutrition_highlight": "富含碘和礦物質",
+        "doctor_note": "切碎使用",
+        "picking_guide": "選乾淨無沙",
+        "processing_guide": "泡軟切碎煮熟",
+        "allergy_risk": false
+    },
+    {
+        "id": "seaweed",
+        "name": "海苔",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Seaweed",
+        "nutrition_highlight": "富含碘",
+        "doctor_note": "選無調味海苔",
+        "picking_guide": "選原味無添加",
+        "processing_guide": "捏碎拌飯",
+        "allergy_risk": false
+    },
+    {
+        "id": "chive-flower",
+        "name": "韭菜花",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=ChiveFlower",
+        "nutrition_highlight": "富含維生素A",
+        "doctor_note": "味道較重少量用",
+        "picking_guide": "選嫩綠新鮮",
+        "processing_guide": "切段炒熟",
+        "allergy_risk": false
+    },
+    {
+        "id": "ginger",
+        "name": "薑",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Ginger",
+        "nutrition_highlight": "驅寒暖胃",
+        "doctor_note": "少量作為調味",
+        "picking_guide": "選老薑皮薄",
+        "processing_guide": "切片煮湯",
+        "allergy_risk": false
+    },
+    {
+        "id": "garlic",
+        "name": "蒜頭",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Garlic",
+        "nutrition_highlight": "增強免疫力",
+        "doctor_note": "少量調味",
+        "picking_guide": "選硬實飽滿",
+        "processing_guide": "煮熟後味道較溫和",
+        "allergy_risk": false
+    },
+    {
+        "id": "basil",
+        "name": "九層塔",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Basil",
+        "nutrition_highlight": "香草植物",
+        "doctor_note": "增添香氣",
+        "picking_guide": "選葉片翠綠",
+        "processing_guide": "煮熟增香",
+        "allergy_risk": false
+    },
+    {
+        "id": "peeled-chili",
+        "name": "剝皮辣椒",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=PeeledChili",
+        "nutrition_highlight": "開胃",
+        "doctor_note": "選不辣的品種",
+        "picking_guide": "選不辣款",
+        "processing_guide": "燉湯使用",
+        "allergy_risk": false
+    },
+    {
+        "id": "papaya",
+        "name": "木瓜",
+        "category": "fruit",
+        "imageUrl": "https://placehold.co/200x200?text=Papaya",
+        "nutrition_highlight": "富含消化酵素和維生素C",
+        "doctor_note": "助消化好水果",
+        "picking_guide": "選熟透橙黃",
+        "processing_guide": "去皮去籽壓泥",
+        "allergy_risk": false
+    },
+    {
+        "id": "grape",
+        "name": "葡萄",
+        "category": "fruit",
+        "imageUrl": "https://placehold.co/200x200?text=Grape",
+        "nutrition_highlight": "富含花青素和維生素C",
+        "doctor_note": "務必去皮去籽",
+        "picking_guide": "選飽滿新鮮",
+        "processing_guide": "去皮去籽壓泥",
+        "allergy_risk": false
+    },
+    {
+        "id": "pineapple",
+        "name": "鳳梨",
+        "category": "fruit",
+        "imageUrl": "https://placehold.co/200x200?text=Pineapple",
+        "nutrition_highlight": "富含消化酵素",
+        "doctor_note": "酸度較高，少量",
+        "picking_guide": "選熟透香甜",
+        "processing_guide": "切碎混入粥中",
+        "allergy_risk": false
+    },
+    {
+        "id": "strawberry",
+        "name": "草莓",
+        "category": "fruit",
+        "imageUrl": "https://placehold.co/200x200?text=Strawberry",
+        "nutrition_highlight": "富含維生素C",
+        "doctor_note": "可能過敏，先少量試",
+        "picking_guide": "選鮮紅飽滿",
+        "processing_guide": "洗淨壓泥",
+        "allergy_risk": true
+    },
+    {
+        "id": "whitebait",
+        "name": "吻仔魚",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Whitebait",
+        "nutrition_highlight": "富含鈣質和蛋白質",
+        "doctor_note": "補鈣好選擇",
+        "picking_guide": "選新鮮無腥味",
+        "processing_guide": "蒸熟混入粥中",
+        "allergy_risk": true
+    },
+    {
+        "id": "beef",
+        "name": "牛肉",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Beef",
+        "nutrition_highlight": "富含鐵質和蛋白質",
+        "doctor_note": "補鐵佳品",
+        "picking_guide": "選瘦肉部位",
+        "processing_guide": "蒸熟切碎",
+        "allergy_risk": false
+    },
+    {
+        "id": "sea-bream",
+        "name": "鯛魚",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=SeaBream",
+        "nutrition_highlight": "優質蛋白質，刺少",
+        "doctor_note": "魚肉細嫩好消化",
+        "picking_guide": "選新鮮無腥",
+        "processing_guide": "蒸熟去骨",
+        "allergy_risk": true
+    },
+    {
+        "id": "tuna",
+        "name": "鮪魚",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Tuna",
+        "nutrition_highlight": "富含Omega-3",
+        "doctor_note": "選水煮罐頭非油漬",
+        "picking_guide": "選水煮無鹽",
+        "processing_guide": "瀝乾混入粥",
+        "allergy_risk": true
+    },
+    {
+        "id": "cod",
+        "name": "鱈魚",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Cod",
+        "nutrition_highlight": "優質蛋白質，低脂",
+        "doctor_note": "肉質細嫩",
+        "picking_guide": "選新鮮魚片",
+        "processing_guide": "蒸熟去骨",
+        "allergy_risk": true
+    },
+    {
+        "id": "scallop",
+        "name": "干貝",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Scallop",
+        "nutrition_highlight": "高蛋白低脂",
+        "doctor_note": "增添鮮味",
+        "picking_guide": "選乾貝或新鮮",
+        "processing_guide": "蒸熟撕絲",
+        "allergy_risk": true
+    },
+    {
+        "id": "milkfish",
+        "name": "虱目魚",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Milkfish",
+        "nutrition_highlight": "富含Omega-3",
+        "doctor_note": "台灣傳統魚種",
+        "picking_guide": "選魚肚部位",
+        "processing_guide": "蒸熟去骨",
+        "allergy_risk": true
+    },
+    {
+        "id": "pork-liver",
+        "name": "豬肝",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=PorkLiver",
+        "nutrition_highlight": "富含鐵質和維生素A",
+        "doctor_note": "補鐵聖品",
+        "picking_guide": "選新鮮深紅色",
+        "processing_guide": "切薄片川燙",
+        "allergy_risk": false
+    },
+    {
+        "id": "sea-bass",
+        "name": "鱸魚",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=SeaBass",
+        "nutrition_highlight": "優質蛋白質，刺少",
+        "doctor_note": "魚刺少適合寶寶",
+        "picking_guide": "選新鮮魚片",
+        "processing_guide": "清蒸去骨",
+        "allergy_risk": true
+    },
+    {
+        "id": "mackerel",
+        "name": "鯖魚",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Mackerel",
+        "nutrition_highlight": "富含Omega-3和DHA",
+        "doctor_note": "用新鮮非罐頭",
+        "picking_guide": "選新鮮無腥",
+        "processing_guide": "蒸熟去骨",
+        "allergy_risk": true
+    },
+    {
+        "id": "shrimp",
+        "name": "蝦仁",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Shrimp",
+        "nutrition_highlight": "高蛋白低脂，富含鋅",
+        "doctor_note": "常見過敏原，先少量試",
+        "picking_guide": "選新鮮去殼",
+        "processing_guide": "蒸熟切碎",
+        "allergy_risk": true
+    },
+    {
+        "id": "clam",
+        "name": "蛤蜊",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Clam",
+        "nutrition_highlight": "富含鋅和鐵質",
+        "doctor_note": "吐沙乾淨再煮",
+        "picking_guide": "選活蛤蜊",
+        "processing_guide": "煮至開口",
+        "allergy_risk": true
+    },
+    {
+        "id": "pork-ribs",
+        "name": "排骨",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=PorkRibs",
+        "nutrition_highlight": "富含鈣質（骨湯）",
+        "doctor_note": "燉湯補鈣",
+        "picking_guide": "選小排骨",
+        "processing_guide": "川燙後燉煮",
+        "allergy_risk": false
+    },
+    {
+        "id": "bacon",
+        "name": "培根",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Bacon",
+        "nutrition_highlight": "蛋白質來源",
+        "doctor_note": "選少脂少鹽款",
+        "picking_guide": "選低鈉培根",
+        "processing_guide": "煎香切碎",
+        "allergy_risk": false
+    },
+    {
+        "id": "edamame",
+        "name": "毛豆",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Edamame",
+        "nutrition_highlight": "植物性蛋白質",
+        "doctor_note": "大豆製品，可能過敏",
+        "picking_guide": "選新鮮翠綠",
+        "processing_guide": "蒸熟去皮",
+        "allergy_risk": true
+    },
+    {
+        "id": "lima-bean",
+        "name": "皇帝豆",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=LimaBean",
+        "nutrition_highlight": "高蛋白高纖維",
+        "doctor_note": "需去皮較好消化",
+        "picking_guide": "選飽滿新鮮",
+        "processing_guide": "煮軟去皮",
+        "allergy_risk": false
+    },
+    {
+        "id": "chickpea",
+        "name": "鷹嘴豆",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Chickpea",
+        "nutrition_highlight": "高蛋白高纖維",
+        "doctor_note": "可做成泥狀",
+        "picking_guide": "選罐頭或乾豆",
+        "processing_guide": "煮軟打泥",
+        "allergy_risk": false
+    },
+    {
+        "id": "red-bean",
+        "name": "紅豆",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=RedBean",
+        "nutrition_highlight": "富含鐵質",
+        "doctor_note": "需煮至非常軟爛",
+        "picking_guide": "選顆粒飽滿",
+        "processing_guide": "浸泡後煮爛",
+        "allergy_risk": false
+    },
+    {
+        "id": "mung-bean",
+        "name": "綠豆",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=MungBean",
+        "nutrition_highlight": "清熱解毒",
+        "doctor_note": "夏天消暑",
+        "picking_guide": "選顆粒飽滿",
+        "processing_guide": "煮爛成沙",
+        "allergy_risk": false
+    },
+    {
+        "id": "black-sesame",
+        "name": "黑芝麻",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=BlackSesame",
+        "nutrition_highlight": "富含鈣質",
+        "doctor_note": "需磨成粉",
+        "picking_guide": "選炒香芝麻",
+        "processing_guide": "磨粉煮糊",
+        "allergy_risk": true
+    },
+    {
+        "id": "century-egg",
+        "name": "皮蛋",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=CenturyEgg",
+        "nutrition_highlight": "蛋白質來源",
+        "doctor_note": "1歲後少量",
+        "picking_guide": "選無鉛皮蛋",
+        "processing_guide": "切丁使用",
+        "allergy_risk": false
+    },
+    {
+        "id": "salted-egg",
+        "name": "鹹蛋",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=SaltedEgg",
+        "nutrition_highlight": "蛋白質來源",
+        "doctor_note": "鈉含量高少量用",
+        "picking_guide": "選蛋黃沙沙的",
+        "processing_guide": "蛋黃炒菜用",
+        "allergy_risk": false
+    },
+    {
+        "id": "yogurt",
+        "name": "優格",
+        "category": "dairy",
+        "imageUrl": "https://placehold.co/200x200?text=Yogurt",
+        "nutrition_highlight": "富含益生菌和鈣質",
+        "doctor_note": "選無糖原味",
+        "picking_guide": "選活菌無糖",
+        "processing_guide": "直接食用",
+        "allergy_risk": true
+    },
+    {
+        "id": "cheese",
+        "name": "起司",
+        "category": "dairy",
+        "imageUrl": "https://placehold.co/200x200?text=Cheese",
+        "nutrition_highlight": "富含鈣質和蛋白質",
+        "doctor_note": "選低鈉天然起司",
+        "picking_guide": "選嬰兒專用",
+        "processing_guide": "切碎撒在料理上",
+        "allergy_risk": true
+    },
+    {
+        "id": "milk",
+        "name": "鮮奶",
+        "category": "dairy",
+        "imageUrl": "https://placehold.co/200x200?text=Milk",
+        "nutrition_highlight": "富含鈣質",
+        "doctor_note": "1歲後可作為飲品",
+        "picking_guide": "選全脂鮮奶",
+        "processing_guide": "加熱後飲用",
+        "allergy_risk": true
+    },
+    {
+        "id": "miso",
+        "name": "味噌",
+        "category": "other",
+        "imageUrl": "https://placehold.co/200x200?text=Miso",
+        "nutrition_highlight": "發酵食品",
+        "doctor_note": "鈉含量高少量用",
+        "picking_guide": "選低鈉味噌",
+        "processing_guide": "溶於湯中調味",
+        "allergy_risk": true
+    },
+    {
+        "id": "chicken-essence",
+        "name": "滴雞精",
+        "category": "other",
+        "imageUrl": "https://placehold.co/200x200?text=ChickenEssence",
+        "nutrition_highlight": "濃縮營養",
+        "doctor_note": "選無調味款",
+        "picking_guide": "選純天然無添加",
+        "processing_guide": "加入蒸蛋或粥",
+        "allergy_risk": false
+    },
+    {
+        "id": "lotus-root",
+        "name": "蓮藕",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=LotusRoot",
+        "nutrition_highlight": "富含膳食纖維",
+        "doctor_note": "生涼熟溫",
+        "picking_guide": "選節短肥大",
+        "processing_guide": "燉湯或磨泥",
+        "allergy_risk": false
+    },
+    {
+        "id": "bonito",
+        "name": "柴魚",
+        "category": "protein",
+        "imageUrl": "https://placehold.co/200x200?text=Bonito",
+        "nutrition_highlight": "天然鮮味來源",
+        "doctor_note": "熬高湯用",
+        "picking_guide": "選薄片柴魚",
+        "processing_guide": "熬湯後撈出",
+        "allergy_risk": true
+    },
+    {
+        "id": "shiitake",
+        "name": "香菇",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Shiitake",
+        "nutrition_highlight": "富含維生素D",
+        "doctor_note": "增添鮮味",
+        "picking_guide": "選乾香菇或新鮮",
+        "processing_guide": "切碎煮熟",
+        "allergy_risk": false
+    },
+    {
+        "id": "mushroom",
+        "name": "蘑菇",
+        "category": "vegetable",
+        "imageUrl": "https://placehold.co/200x200?text=Mushroom",
+        "nutrition_highlight": "富含維生素D",
+        "doctor_note": "切碎煮熟",
+        "picking_guide": "選新鮮飽滿",
+        "processing_guide": "切碎炒熟",
+        "allergy_risk": false
     }
 ]
