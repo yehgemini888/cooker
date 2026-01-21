@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useFoodStore } from '@/stores/food'
 import { useUserStore } from '@/stores/user'
 import { usePantryStore } from '@/stores/pantry'
+import { getIngredientImageUrl, hasLocalImage } from '@/composables/useIngredientImage'
 
 const route = useRoute()
 const router = useRouter()
@@ -46,6 +47,14 @@ const preferenceEmoji = computed(() => {
     dislike: '🤢',
   }
   return ingredientState.value.preference ? emojis[ingredientState.value.preference] : ''
+})
+
+// 圖片 URL：優先使用本地圖片，若無則使用 JSON 中的 URL
+const imageUrl = computed(() => {
+  if (hasLocalImage(ingredientId.value)) {
+    return getIngredientImageUrl(ingredientId.value)
+  }
+  return ingredient.value?.imageUrl || 'https://placehold.co/800x400/e2e8f0/64748b?text=Food'
 })
 
 // 相關食譜 (包含此食材的食譜)
@@ -128,7 +137,7 @@ function goToRecipe(recipeId: string) {
       <!-- 食材大圖 -->
       <div class="h-64 bg-gradient-to-br from-gray-200 to-gray-300 relative overflow-hidden">
         <img
-          :src="ingredient.imageUrl || 'https://placehold.co/800x400/e2e8f0/64748b?text=Food'"
+          :src="imageUrl"
           :alt="ingredient.name"
           class="w-full h-full object-cover"
           @error="$event.target.src = 'https://placehold.co/800x400/e2e8f0/64748b?text=Food'"

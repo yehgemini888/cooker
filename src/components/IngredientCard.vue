@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { usePantryStore } from '@/stores/pantry'
+import { getIngredientImageUrl, hasLocalImage } from '@/composables/useIngredientImage'
 import type { Ingredient } from '@/types'
 
 const props = defineProps<{
@@ -41,8 +42,13 @@ const isInPantry = computed(() => {
   return pantryStore.hasItem(props.ingredient.id)
 })
 
-// 預設圖片
+// 圖片 URL：優先使用本地圖片，若無則使用 JSON 中的 URL
 const imageUrl = computed(() => {
+  // 優先檢查本地圖片
+  if (hasLocalImage(props.ingredient.id)) {
+    return getIngredientImageUrl(props.ingredient.id)
+  }
+  // Fallback 到 JSON 中的 URL 或預設圖片
   return props.ingredient.imageUrl || 'https://placehold.co/200x200?text=Food'
 })
 
@@ -119,11 +125,11 @@ function handleClick() {
     </div>
 
     <!-- 圖片區域 -->
-    <div class="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+    <div class="aspect-square bg-white p-4">
       <img
         :src="imageUrl"
         :alt="ingredient.name"
-        class="w-full h-full object-cover rounded-xl"
+        class="w-full h-full object-contain rounded-xl"
         loading="lazy"
         @error="$event.target.src = 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'"
       />
