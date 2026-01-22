@@ -1,13 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
+        // 主要 Tab 頁面
         {
             path: '/',
-            name: 'home',
-            component: HomeView,
+            redirect: '/profile',
         },
         {
             path: '/profile',
@@ -20,6 +19,22 @@ const router = createRouter({
             component: () => import('../views/PantryView.vue'),
         },
         {
+            path: '/ingredients',
+            name: 'ingredients',
+            component: () => import('../views/IngredientsView.vue'),
+        },
+        {
+            path: '/recipes',
+            name: 'recipes',
+            component: () => import('../views/RecipesView.vue'),
+        },
+        {
+            path: '/plan',
+            name: 'plan',
+            component: () => import('../views/PlanView.vue'),
+        },
+        // 詳情頁面
+        {
             path: '/ingredient/:id',
             name: 'ingredient-detail',
             component: () => import('../views/IngredientDetailView.vue'),
@@ -29,15 +44,16 @@ const router = createRouter({
             name: 'recipe-detail',
             component: () => import('../views/RecipeDetailView.vue'),
         },
-        {
-            path: '/recipes',
-            name: 'recipes',
-            component: () => import('../views/RecipesView.vue'),
-        },
+        // 其他頁面
         {
             path: '/wizard',
             name: 'wizard',
             component: () => import('../views/WizardView.vue'),
+        },
+        {
+            path: '/home',
+            name: 'home',
+            component: () => import('../views/HomeView.vue'),
         },
     ],
 })

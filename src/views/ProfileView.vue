@@ -1,92 +1,56 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useUserStore, type IngredientState } from '@/stores/user'
 import { useFoodStore } from '@/stores/food'
+import { usePantryStore } from '@/stores/pantry'
+import { getIngredientImageUrl, hasLocalImage } from '@/composables/useIngredientImage'
+import type { Ingredient } from '@/types'
 
+const router = useRouter()
 const userStore = useUserStore()
 const foodStore = useFoodStore()
+const pantryStore = usePantryStore()
 
 // 編輯模式
 const isEditingProfile = ref(false)
 const editName = ref(userStore.babyName)
 const editBirthday = ref(userStore.birthday)
 
-// 展開的食材卡片
-const expandedIngredient = ref<string | null>(null)
-
 // 篩選器
 const categoryFilter = ref<string>('all')
-const statusFilter = ref<string>('all')
 
 // 分類選項
 const categories = [
-  { value: 'all', label: '全部' },
-  { value: 'grain', label: '穀物類' },
-  { value: 'vegetable', label: '蔬菜類' },
-  { value: 'fruit', label: '水果類' },
-  { value: 'protein', label: '蛋白質類' },
+  { value: 'all', label: '全部', emoji: '📋' },
+  { value: 'grain', label: '穀物', emoji: '🌾' },
+  { value: 'vegetable', label: '蔬菜', emoji: '🥬' },
+  { value: 'fruit', label: '水果', emoji: '🍎' },
+  { value: 'protein', label: '蛋白質', emoji: '🥩' },
+  { value: 'dairy', label: '乳製品', emoji: '🥛' },
 ]
 
-// 狀態選項
-const statusOptions = [
-  { value: 'all', label: '全部' },
-  { value: 'tried', label: '已嘗試' },
-  { value: 'not_tried', label: '未嘗試' },
-  { value: 'allergy', label: '過敏' },
-]
-
-// 喜好選項
-const preferenceOptions = [
-  { value: 'love', emoji: '😍', label: '喜歡' },
-  { value: 'neutral', emoji: '😐', label: '普通' },
-  { value: 'dislike', emoji: '🤢', label: '不喜歡' },
-]
-
-// 篩選後的食材
-const filteredIngredients = computed(() => {
-  return foodStore.ingredients.filter((ingredient) => {
-    // 分類篩選
-    if (categoryFilter.value !== 'all' && ingredient.category !== categoryFilter.value) {
-      return false
-    }
-
-    // 狀態篩選
-    const state = userStore.getIngredientState(ingredient.id)
-    if (statusFilter.value === 'tried' && state.status !== 'tried') {
-      return false
-    }
-    if (statusFilter.value === 'not_tried' && state.status !== 'not_tried') {
-      return false
-    }
-    if (statusFilter.value === 'allergy' && !state.allergy) {
-      return false
-    }
-
-    return true
+// 食材探索牆：已嘗試排前面，未嘗試排後面
+const explorationIngredients = computed(() => {
+  let filtered = foodStore.ingredients
+  
+  // 分類篩選
+  if (categoryFilter.value !== 'all') {
+    filtered = filtered.filter(ing => ing.category === categoryFilter.value)
+  }
+  
+  // 依嘗試狀態排序：已嘗試 > 未嘗試
+  return [...filtered].sort((a, b) => {
+    const stateA = userStore.getIngredientState(a.id)
+    const stateB = userStore.getIngredientState(b.id)
+    
+    // 已嘗試排前面
+    if (stateA.status === 'tried' && stateB.status !== 'tried') return -1
+    if (stateA.status !== 'tried' && stateB.status === 'tried') return 1
+    
+    return 0
   })
 })
-
-// 分類標籤顏色
-function getCategoryColor(category: string): string {
-  const colors: Record<string, string> = {
-    grain: 'bg-amber-100 text-amber-800',
-    vegetable: 'bg-green-100 text-green-800',
-    fruit: 'bg-pink-100 text-pink-800',
-    protein: 'bg-blue-100 text-blue-800',
-  }
-  return colors[category] || 'bg-gray-100 text-gray-800'
-}
-
-// 分類標籤名稱
-function getCategoryLabel(category: string): string {
-  const labels: Record<string, string> = {
-    grain: '穀物',
-    vegetable: '蔬菜',
-    fruit: '水果',
-    protein: '蛋白質',
-  }
-  return labels[category] || category
-}
 
 // 儲存寶寶資料
 function saveProfile() {
@@ -101,84 +65,74 @@ function cancelEdit() {
   isEditingProfile.value = false
 }
 
-// 切換嘗試狀態
-function toggleTried(ingredientId: string) {
-  const currentState = userStore.getIngredientState(ingredientId)
-  userStore.updateIngredientState(ingredientId, {
-    status: currentState.status === 'tried' ? 'not_tried' : 'tried',
-  })
+// 導航到食材詳情
+function goToIngredient(ingredient: Ingredient) {
+  router.push(`/ingredient/${ingredient.id}`)
 }
 
-// 切換過敏狀態
-function toggleAllergy(ingredientId: string) {
-  const currentState = userStore.getIngredientState(ingredientId)
-  userStore.updateIngredientState(ingredientId, {
-    allergy: !currentState.allergy,
-  })
-}
-
-// 設定喜好
-function setPreference(ingredientId: string, preference: IngredientState['preference']) {
-  const currentState = userStore.getIngredientState(ingredientId)
-  userStore.updateIngredientState(ingredientId, {
-    preference: currentState.preference === preference ? null : preference,
-  })
-}
-
-// 更新備註
-function updateNote(ingredientId: string, note: string) {
-  userStore.updateIngredientState(ingredientId, { note })
-}
-
-// 切換展開狀態
-function toggleExpand(ingredientId: string) {
-  expandedIngredient.value = expandedIngredient.value === ingredientId ? null : ingredientId
-}
-
-// 取得喜好 emoji
-function getPreferenceEmoji(preference: IngredientState['preference']): string {
-  const emojis: Record<string, string> = {
-    love: '😍',
-    neutral: '😐',
-    dislike: '🤢',
+// 取得圖片 URL
+function getImageUrl(ingredientId: string, fallbackUrl?: string): string {
+  if (hasLocalImage(ingredientId)) {
+    return getIngredientImageUrl(ingredientId)
   }
-  return preference ? emojis[preference] : ''
+  return fallbackUrl || 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'
+}
+
+// 取得食材狀態
+function getState(ingredientId: string) {
+  return userStore.getIngredientState(ingredientId)
+}
+
+// 是否已嘗試
+function isTried(ingredientId: string): boolean {
+  return getState(ingredientId).status === 'tried'
+}
+
+// 是否過敏
+function hasAllergy(ingredientId: string): boolean {
+  return getState(ingredientId).allergy
+}
+
+// 是否在冰箱
+function isInPantry(ingredientId: string): boolean {
+  return pantryStore.hasItem(ingredientId)
+}
+
+// 是否高風險
+function isHighRisk(ingredient: Ingredient): boolean {
+  return ingredient.allergy_risk === true
 }
 </script>
 
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-orange-50 to-green-50 pb-8">
+  <div class="min-h-screen bg-gradient-to-br from-orange-50 to-green-50 pb-24">
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-10">
+    <header class="bg-white shadow-sm sticky top-0 z-20">
       <div class="container mx-auto px-4 py-4">
-        <div class="flex items-center justify-between">
-          <router-link to="/" class="text-gray-600 hover:text-primary-500 transition-colors">
-            ← 返回首頁
-          </router-link>
-          <h1 class="text-xl font-bold text-gray-800">🍼 食材護照</h1>
-          <div class="w-16"></div>
+        <div class="flex items-center justify-center">
+          <h1 class="text-xl font-bold text-gray-800">👶 寶寶資料</h1>
         </div>
       </div>
     </header>
 
-    <div class="container mx-auto px-4 py-6">
+    <div class="container mx-auto px-4 py-4">
       <!-- 寶寶資料卡片 -->
-      <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+      <div class="bg-white rounded-2xl shadow-lg p-5 mb-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-gray-800">👶 寶寶資料</h2>
+          <h2 class="text-lg font-semibold text-gray-800">寶寶資訊</h2>
           <button
             v-if="!isEditingProfile"
             @click="isEditingProfile = true"
             class="text-primary-500 hover:text-primary-600 text-sm font-medium"
           >
-            編輯
+            ✏️ 編輯
           </button>
         </div>
 
         <!-- 顯示模式 -->
         <div v-if="!isEditingProfile" class="space-y-3">
           <div class="flex items-center gap-4">
-            <div class="w-16 h-16 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full flex items-center justify-center text-3xl">
+            <div class="w-16 h-16 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full flex items-center justify-center text-3xl shadow-lg">
               👶
             </div>
             <div>
@@ -194,7 +148,7 @@ function getPreferenceEmoji(preference: IngredientState['preference']): string {
           <!-- 統計數據 -->
           <div class="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-100">
             <div class="text-center">
-              <p class="text-2xl font-bold text-primary-500">{{ userStore.triedIngredientsCount }}</p>
+              <p class="text-2xl font-bold text-green-500">{{ userStore.triedIngredientsCount }}</p>
               <p class="text-xs text-gray-500">已嘗試</p>
             </div>
             <div class="text-center">
@@ -202,7 +156,7 @@ function getPreferenceEmoji(preference: IngredientState['preference']): string {
               <p class="text-xs text-gray-500">過敏食材</p>
             </div>
             <div class="text-center">
-              <p class="text-2xl font-bold text-secondary-500">{{ foodStore.ingredients.length }}</p>
+              <p class="text-2xl font-bold text-blue-500">{{ foodStore.ingredients.length }}</p>
               <p class="text-xs text-gray-500">總食材數</p>
             </div>
           </div>
@@ -244,158 +198,122 @@ function getPreferenceEmoji(preference: IngredientState['preference']): string {
         </div>
       </div>
 
-      <!-- 篩選器 -->
-      <div class="bg-white rounded-xl shadow-md p-4 mb-6">
-        <div class="flex flex-wrap gap-4">
-          <div class="flex-1 min-w-[140px]">
-            <label class="block text-xs font-medium text-gray-500 mb-1">分類</label>
-            <select
-              v-model="categoryFilter"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            >
-              <option v-for="cat in categories" :key="cat.value" :value="cat.value">
-                {{ cat.label }}
-              </option>
-            </select>
-          </div>
-          <div class="flex-1 min-w-[140px]">
-            <label class="block text-xs font-medium text-gray-500 mb-1">狀態</label>
-            <select
-              v-model="statusFilter"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            >
-              <option v-for="status in statusOptions" :key="status.value" :value="status.value">
-                {{ status.label }}
-              </option>
-            </select>
-          </div>
+      <!-- 食材探索牆 -->
+      <div class="bg-white rounded-2xl shadow-lg p-5">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <span>🗺️</span>
+          <span>食材探索牆</span>
+        </h2>
+        
+        <!-- 分類篩選 -->
+        <div class="flex gap-2 overflow-x-auto pb-3 mb-4 scrollbar-hide">
+          <button
+            v-for="cat in categories"
+            :key="cat.value"
+            @click="categoryFilter = cat.value"
+            class="flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all"
+            :class="categoryFilter === cat.value
+              ? 'bg-primary-500 text-white shadow-md'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'"
+          >
+            {{ cat.emoji }} {{ cat.label }}
+          </button>
         </div>
-      </div>
 
-      <!-- 食材列表 -->
-      <div class="space-y-3">
-        <div
-          v-for="ingredient in filteredIngredients"
-          :key="ingredient.id"
-          class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-200"
-          :class="{ 'ring-2 ring-red-400': userStore.getIngredientState(ingredient.id).allergy }"
-        >
-          <!-- 食材主要資訊 -->
+        <!-- 食材網格 -->
+        <div class="grid grid-cols-3 gap-3">
           <div
-            class="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
-            @click="toggleExpand(ingredient.id)"
+            v-for="ingredient in explorationIngredients"
+            :key="ingredient.id"
+            @click="goToIngredient(ingredient)"
+            class="relative bg-white rounded-xl shadow-md overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 border"
+            :class="{
+              'border-green-400': isTried(ingredient.id) && !hasAllergy(ingredient.id),
+              'border-red-400': hasAllergy(ingredient.id),
+              'border-gray-200': !isTried(ingredient.id) && !hasAllergy(ingredient.id)
+            }"
           >
-            <div class="flex items-center gap-3">
-              <!-- 嘗試狀態指示器 -->
-              <button
-                @click.stop="toggleTried(ingredient.id)"
-                class="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200"
-                :class="userStore.getIngredientState(ingredient.id).status === 'tried'
-                  ? 'bg-secondary-500 text-white'
-                  : 'bg-gray-200 text-gray-400'"
+            <!-- Badge 區域：右上角 -->
+            <div class="absolute top-1 right-1 flex flex-wrap gap-0.5 z-10 max-w-[60%] justify-end">
+              <!-- 冰箱有 -->
+              <span
+                v-if="isInPantry(ingredient.id)"
+                class="w-5 h-5 bg-cyan-500 rounded-full flex items-center justify-center shadow text-xs"
+                title="冰箱有"
               >
-                <span v-if="userStore.getIngredientState(ingredient.id).status === 'tried'" class="text-lg">✓</span>
-                <span v-else class="text-lg">○</span>
-              </button>
-
-              <!-- 食材名稱與標籤 -->
-              <div class="flex-1">
-                <div class="flex items-center gap-2">
-                  <span class="font-medium text-gray-800">{{ ingredient.name }}</span>
-                  <span
-                    class="text-xs px-2 py-0.5 rounded-full"
-                    :class="getCategoryColor(ingredient.category)"
-                  >
-                    {{ getCategoryLabel(ingredient.category) }}
-                  </span>
-                  <span
-                    v-if="userStore.getIngredientState(ingredient.id).allergy"
-                    class="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-800"
-                  >
-                    ⚠️ 過敏
-                  </span>
-                </div>
-                <div class="flex items-center gap-2 mt-1">
-                  <span class="text-lg">
-                    {{ getPreferenceEmoji(userStore.getIngredientState(ingredient.id).preference) }}
-                  </span>
-                  <span
-                    v-if="userStore.getIngredientState(ingredient.id).note"
-                    class="text-xs text-gray-400"
-                  >
-                    📝 有備註
-                  </span>
-                </div>
-              </div>
-
-              <!-- 展開箭頭 -->
-              <div
-                class="text-gray-400 transition-transform duration-200"
-                :class="{ 'rotate-180': expandedIngredient === ingredient.id }"
+                🧊
+              </span>
+              <!-- 高風險 -->
+              <span
+                v-if="isHighRisk(ingredient) && !hasAllergy(ingredient.id)"
+                class="w-5 h-5 bg-orange-400 rounded-full flex items-center justify-center shadow text-xs"
+                title="高過敏風險"
               >
-                ▼
-              </div>
-            </div>
-          </div>
-
-          <!-- 展開的詳細設定 -->
-          <div
-            v-if="expandedIngredient === ingredient.id"
-            class="px-4 pb-4 pt-2 border-t border-gray-100 bg-gray-50"
-          >
-            <!-- 過敏開關 -->
-            <div class="flex items-center justify-between py-3 border-b border-gray-200">
-              <span class="text-sm text-gray-700">⚠️ 標記為過敏</span>
-              <button
-                @click="toggleAllergy(ingredient.id)"
-                class="relative w-14 h-7 rounded-full transition-colors duration-200"
-                :class="userStore.getIngredientState(ingredient.id).allergy
-                  ? 'bg-red-500'
-                  : 'bg-gray-300'"
+                ⚠️
+              </span>
+              <!-- 過敏 -->
+              <span
+                v-if="hasAllergy(ingredient.id)"
+                class="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center shadow text-xs animate-pulse"
+                title="過敏"
               >
-                <span
-                  class="absolute top-0.5 w-6 h-6 bg-white rounded-full shadow transition-all duration-200"
-                  :class="userStore.getIngredientState(ingredient.id).allergy ? 'left-7' : 'left-0.5'"
-                ></span>
-              </button>
+                ❗
+              </span>
+              <!-- 已嘗試 -->
+              <span
+                v-if="isTried(ingredient.id)"
+                class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center shadow text-xs"
+                title="已嘗試"
+              >
+                ✅
+              </span>
             </div>
 
-            <!-- 喜好選擇 -->
-            <div class="py-3 border-b border-gray-200">
-              <p class="text-sm text-gray-700 mb-2">喜好程度</p>
-              <div class="flex gap-2">
-                <button
-                  v-for="pref in preferenceOptions"
-                  :key="pref.value"
-                  @click="setPreference(ingredient.id, pref.value as IngredientState['preference'])"
-                  class="flex-1 py-2 rounded-lg text-center transition-all duration-200"
-                  :class="userStore.getIngredientState(ingredient.id).preference === pref.value
-                    ? 'bg-primary-100 ring-2 ring-primary-500'
-                    : 'bg-gray-100 hover:bg-gray-200'"
-                >
-                  <span class="text-2xl block">{{ pref.emoji }}</span>
-                  <span class="text-xs text-gray-600">{{ pref.label }}</span>
-                </button>
-              </div>
+            <!-- 圖片區域 -->
+            <div 
+              class="aspect-square p-2 bg-white"
+              :class="{
+                'grayscale opacity-50': !isTried(ingredient.id),
+                '': isTried(ingredient.id)
+              }"
+            >
+              <img
+                :src="getImageUrl(ingredient.id, ingredient.imageUrl)"
+                :alt="ingredient.name"
+                class="w-full h-full object-contain rounded-lg"
+                loading="lazy"
+                @error="($event.target as HTMLImageElement).src = 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'"
+              />
             </div>
 
-            <!-- 備註輸入 -->
-            <div class="pt-3">
-              <label class="text-sm text-gray-700 block mb-2">📝 備註</label>
-              <textarea
-                :value="userStore.getIngredientState(ingredient.id).note"
-                @input="(e) => updateNote(ingredient.id, (e.target as HTMLTextAreaElement).value)"
-                placeholder="記錄寶寶的反應、製作方式等..."
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-                rows="2"
-              ></textarea>
+            <!-- 名稱 -->
+            <div class="p-2 text-center">
+              <p 
+                class="text-sm font-medium truncate"
+                :class="{
+                  'text-gray-800': isTried(ingredient.id),
+                  'text-gray-400': !isTried(ingredient.id)
+                }"
+              >
+                {{ ingredient.name }}
+              </p>
             </div>
+
+            <!-- 底部狀態條 -->
+            <div
+              class="h-1 w-full"
+              :class="{
+                'bg-green-500': isTried(ingredient.id) && !hasAllergy(ingredient.id),
+                'bg-red-500': hasAllergy(ingredient.id),
+                'bg-gray-200': !isTried(ingredient.id) && !hasAllergy(ingredient.id)
+              }"
+            ></div>
           </div>
         </div>
 
         <!-- 空狀態 -->
         <div
-          v-if="filteredIngredients.length === 0"
+          v-if="explorationIngredients.length === 0"
           class="text-center py-12 text-gray-500"
         >
           <p class="text-4xl mb-2">🔍</p>
@@ -405,3 +323,13 @@ function getPreferenceEmoji(preference: IngredientState['preference']): string {
     </div>
   </div>
 </template>
+
+<style scoped>
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>
