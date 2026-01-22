@@ -33,6 +33,11 @@ const router = createRouter({
             name: 'plan',
             component: () => import('../views/PlanView.vue'),
         },
+        {
+            path: '/shopping',
+            name: 'shopping',
+            component: () => import('../views/ShoppingListView.vue'),
+        },
         // 詳情頁面
         {
             path: '/ingredient/:id',

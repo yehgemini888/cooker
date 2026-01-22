@@ -11,9 +11,43 @@ export interface ShoppingItem {
     name: string
     category: string
     purchased: boolean
+    /** 最早需要的日期 */
+    earliestDate: string
+    /** 時間分類：本周 / 下周 / 更後 */
+    timeGroup: 'this_week' | 'next_week' | 'later'
 }
 
 const STORAGE_KEY = 'babymeal-passport-shopping'
+
+/**
+ * 本地日期格式化
+ */
+function formatDate(d: Date): string {
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${y}-${m}-${day}`
+}
+
+/**
+ * 取得本周日
+ */
+function getWeekEnd(date: Date = new Date()): Date {
+    const d = new Date(date)
+    const day = d.getDay()
+    const diff = 7 - day // 距離週日的天數
+    d.setDate(d.getDate() + diff)
+    return d
+}
+
+/**
+ * 取得下周日
+ */
+function getNextWeekEnd(date: Date = new Date()): Date {
+    const weekEnd = getWeekEnd(date)
+    weekEnd.setDate(weekEnd.getDate() + 7)
+    return weekEnd
+}
 
 /**
  * 從 LocalStorage 載入已購買狀態
@@ -49,57 +83,123 @@ export function useShoppingList() {
     // 已購買的食材 ID
     const purchasedItems = ref<Set<string>>(loadPurchasedItems())
 
+    const todayStr = formatDate(new Date())
+    const thisWeekEndStr = formatDate(getWeekEnd())
+    const nextWeekEndStr = formatDate(getNextWeekEnd())
+
     /**
-     * 取得本週所需的所有食材 ID
+     * 取得食材的最早需要日期
      */
-    const requiredIngredients = computed(() => {
-        if (!planStore.currentPlan) return new Set<string>()
+    function getEarliestDateForIngredient(ingredientId: string): string | null {
+        if (!planStore.currentPlan) return null
 
-        const allIngredients = new Set<string>()
+        let earliest: string | null = null
 
-        Object.values(planStore.currentPlan.meals).forEach((recipeIds) => {
+        Object.entries(planStore.currentPlan.meals).forEach(([dateStr, recipeIds]) => {
             recipeIds.forEach((recipeId) => {
                 const recipe = foodStore.recipes.find((r) => r.id === recipeId)
-                if (recipe) {
-                    recipe.ingredient_ids.forEach((ingredientId) => {
-                        allIngredients.add(ingredientId)
-                    })
+                if (recipe && recipe.ingredient_ids.includes(ingredientId)) {
+                    if (!earliest || dateStr < earliest) {
+                        earliest = dateStr
+                    }
                 }
             })
         })
 
-        return allIngredients
-    })
+        return earliest
+    }
 
     /**
-     * 購物清單 (扣除冰箱已有的食材)
+     * 計算時間分類
+     */
+    function getTimeGroup(dateStr: string): 'this_week' | 'next_week' | 'later' {
+        if (dateStr <= thisWeekEndStr) {
+            return 'this_week'
+        } else if (dateStr <= nextWeekEndStr) {
+            return 'next_week'
+        } else {
+            return 'later'
+        }
+    }
+
+    /**
+     * 完整購物清單（含時間分類）
      */
     const shoppingList = computed<ShoppingItem[]>(() => {
-        const items: ShoppingItem[] = []
+        if (!planStore.currentPlan) return []
 
-        requiredIngredients.value.forEach((ingredientId) => {
-            // 如果冰箱已有，則跳過
-            if (pantryStore.hasItem(ingredientId)) return
+        const ingredientMap = new Map<string, ShoppingItem>()
 
-            const ingredient = foodStore.getIngredientById(ingredientId)
-            if (ingredient) {
-                items.push({
-                    ingredientId,
-                    name: ingredient.name,
-                    category: ingredient.category,
-                    purchased: purchasedItems.value.has(ingredientId),
+        // 遍歷所有計畫的餐點
+        Object.entries(planStore.currentPlan.meals).forEach(([dateStr, recipeIds]) => {
+            recipeIds.forEach((recipeId) => {
+                const recipe = foodStore.recipes.find((r) => r.id === recipeId)
+                if (!recipe) return
+
+                recipe.ingredient_ids.forEach((ingredientId) => {
+                    // 跳過冰箱已有的食材
+                    if (pantryStore.hasItem(ingredientId)) return
+
+                    const ingredient = foodStore.getIngredientById(ingredientId)
+                    if (!ingredient) return
+
+                    // 檢查是否已存在，更新最早日期
+                    if (ingredientMap.has(ingredientId)) {
+                        const existing = ingredientMap.get(ingredientId)!
+                        if (dateStr < existing.earliestDate) {
+                            existing.earliestDate = dateStr
+                            existing.timeGroup = getTimeGroup(dateStr)
+                        }
+                    } else {
+                        ingredientMap.set(ingredientId, {
+                            ingredientId,
+                            name: ingredient.name,
+                            category: ingredient.category,
+                            purchased: purchasedItems.value.has(ingredientId),
+                            earliestDate: dateStr,
+                            timeGroup: getTimeGroup(dateStr),
+                        })
+                    }
                 })
-            }
+            })
         })
 
-        // 按分類排序
-        const categoryOrder = ['grain', 'vegetable', 'fruit', 'protein']
+        const items = Array.from(ingredientMap.values())
+
+        // 按時間分組優先，再按分類排序
+        const categoryOrder = ['grain', 'vegetable', 'fruit', 'protein', 'dairy', 'other']
         items.sort((a, b) => {
+            // 先按時間分組
+            const timeOrder = { this_week: 0, next_week: 1, later: 2 }
+            const timeDiff = timeOrder[a.timeGroup] - timeOrder[b.timeGroup]
+            if (timeDiff !== 0) return timeDiff
+            // 再按分類
             return categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category)
         })
 
         return items
     })
+
+    /**
+     * 本周購物清單
+     */
+    const thisWeekList = computed(() =>
+        shoppingList.value.filter((item) => item.timeGroup === 'this_week')
+    )
+
+    /**
+     * 下周購物清單
+     */
+    const nextWeekList = computed(() =>
+        shoppingList.value.filter((item) => item.timeGroup === 'next_week')
+    )
+
+    /**
+     * 更後的購物清單
+     */
+    const laterList = computed(() =>
+        shoppingList.value.filter((item) => item.timeGroup === 'later')
+    )
 
     /**
      * 待購買項目數量
@@ -114,6 +214,13 @@ export function useShoppingList() {
     const purchasedCount = computed(() => {
         return shoppingList.value.filter((item) => item.purchased).length
     })
+
+    /**
+     * 本周待購數量
+     */
+    const thisWeekPendingCount = computed(() =>
+        thisWeekList.value.filter((item) => !item.purchased).length
+    )
 
     /**
      * 切換購買狀態
@@ -147,6 +254,16 @@ export function useShoppingList() {
     }
 
     /**
+     * 標記本周已購買
+     */
+    function markThisWeekPurchased() {
+        thisWeekList.value.forEach((item) => {
+            purchasedItems.value.add(item.ingredientId)
+        })
+        purchasedItems.value = new Set(purchasedItems.value)
+    }
+
+    /**
      * 清除所有已購買狀態
      */
     function clearAllPurchased() {
@@ -162,8 +279,23 @@ export function useShoppingList() {
                 pantryStore.addItem(item.ingredientId)
             }
         })
-        // 清除購物清單狀態
         clearAllPurchased()
+    }
+
+    /**
+     * 將本周已購買項目加入冰箱
+     */
+    function addThisWeekPurchasedToPantry() {
+        thisWeekList.value.forEach((item) => {
+            if (item.purchased) {
+                pantryStore.addItem(item.ingredientId)
+            }
+        })
+        // 只清除本周的勾選狀態
+        thisWeekList.value.forEach((item) => {
+            purchasedItems.value.delete(item.ingredientId)
+        })
+        purchasedItems.value = new Set(purchasedItems.value)
     }
 
     // 監聽變化並儲存
@@ -177,13 +309,18 @@ export function useShoppingList() {
 
     return {
         shoppingList,
+        thisWeekList,
+        nextWeekList,
+        laterList,
         pendingCount,
         purchasedCount,
-        requiredIngredients,
+        thisWeekPendingCount,
         togglePurchased,
         markPurchasedAndAddToPantry,
         markAllPurchased,
+        markThisWeekPurchased,
         clearAllPurchased,
         addAllPurchasedToPantry,
+        addThisWeekPurchasedToPantry,
     }
 }
