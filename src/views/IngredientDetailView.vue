@@ -120,6 +120,11 @@ function goBack() {
 function goToRecipe(recipeId: string) {
   router.push(`/recipes?highlight=${recipeId}`)
 }
+
+function handleImageError(e: Event) {
+  const img = e.target as HTMLImageElement
+  img.src = 'https://placehold.co/800x400/e2e8f0/64748b?text=Food'
+}
 </script>
 
 <template>
@@ -140,7 +145,7 @@ function goToRecipe(recipeId: string) {
           :src="imageUrl"
           :alt="ingredient.name"
           class="w-full h-full object-cover"
-          @error="$event.target.src = 'https://placehold.co/800x400/e2e8f0/64748b?text=Food'"
+          @error="handleImageError"
         />
         <!-- 漸層遮罩 -->
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>

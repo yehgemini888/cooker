@@ -77,6 +77,11 @@ const categoryColor = computed(() => {
 function handleClick() {
   emit('click', props.ingredient)
 }
+
+function handleImageError(e: Event) {
+  const img = e.target as HTMLImageElement
+  img.src = 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'
+}
 </script>
 
 <template>
@@ -131,7 +136,7 @@ function handleClick() {
         :alt="ingredient.name"
         class="w-full h-full object-contain rounded-xl"
         loading="lazy"
-        @error="$event.target.src = 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'"
+        @error="handleImageError"
       />
     </div>
 
