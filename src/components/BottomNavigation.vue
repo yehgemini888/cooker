@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useShoppingList } from '@/composables/useShoppingList'
 
 const route = useRoute()
 const router = useRouter()
+const { pendingCount } = useShoppingList()
 
 // 導航項目定義
 const navItems = [
@@ -11,43 +13,36 @@ const navItems = [
     name: '寶寶', 
     icon: '👶', 
     path: '/profile',
-    activeIcon: '👶'
   },
   { 
     name: '冰箱', 
     icon: '🧊', 
     path: '/pantry',
-    activeIcon: '🧊'
   },
   { 
     name: '圖鑑', 
     icon: '📖', 
     path: '/ingredients',
-    activeIcon: '📖'
   },
   { 
     name: '食譜', 
     icon: '🍳', 
     path: '/recipes',
-    activeIcon: '🍳'
   },
   { 
     name: '計畫', 
     icon: '📅', 
     path: '/plan',
-    activeIcon: '📅'
   },
   { 
     name: '購物', 
     icon: '🛒', 
     path: '/shopping',
-    activeIcon: '🛒'
   },
 ]
 
 // 當前路徑是否匹配
 const isActive = (path: string) => {
-  // 根路徑匹配 profile
   if (path === '/profile' && (route.path === '/' || route.path === '/profile')) {
     return true
   }
@@ -62,29 +57,39 @@ const navigateTo = (path: string) => {
 
 <template>
   <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
-    <div class="flex justify-around items-center h-16 max-w-lg mx-auto px-2">
+    <div class="flex justify-around items-center h-16 max-w-lg mx-auto px-1">
       <button
         v-for="item in navItems"
         :key="item.path"
         @click="navigateTo(item.path)"
-        class="flex flex-col items-center justify-center flex-1 py-2 transition-all duration-200"
+        class="relative flex flex-col items-center justify-center flex-1 py-2 transition-all duration-200"
         :class="[
           isActive(item.path) 
             ? 'text-primary-600' 
             : 'text-gray-400 hover:text-gray-600'
         ]"
       >
-        <!-- Icon -->
-        <span 
-          class="text-xl mb-0.5 transition-transform duration-200"
-          :class="{ 'scale-110': isActive(item.path) }"
-        >
-          {{ item.icon }}
-        </span>
+        <!-- Icon with Badge -->
+        <div class="relative">
+          <span 
+            class="text-lg mb-0.5 transition-transform duration-200"
+            :class="{ 'scale-110': isActive(item.path) }"
+          >
+            {{ item.icon }}
+          </span>
+          
+          <!-- 購物車待購數量徽章 -->
+          <span
+            v-if="item.path === '/shopping' && pendingCount > 0"
+            class="absolute -top-2 -right-3 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow"
+          >
+            {{ pendingCount > 99 ? '99+' : pendingCount }}
+          </span>
+        </div>
         
         <!-- Label -->
         <span 
-          class="text-xs font-medium"
+          class="text-[10px] font-medium"
           :class="{ 'font-semibold': isActive(item.path) }"
         >
           {{ item.name }}
@@ -93,7 +98,7 @@ const navigateTo = (path: string) => {
         <!-- Active Indicator -->
         <div 
           v-if="isActive(item.path)"
-          class="absolute bottom-0 w-8 h-0.5 bg-primary-500 rounded-t-full"
+          class="absolute bottom-0 w-6 h-0.5 bg-primary-500 rounded-t-full"
         ></div>
       </button>
     </div>
