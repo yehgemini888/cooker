@@ -37,6 +37,12 @@ const navItems = [
     path: '/plan',
     activeIcon: '📅'
   },
+  { 
+    name: '購物', 
+    icon: '🛒', 
+    path: '/shopping',
+    activeIcon: '🛒'
+  },
 ]
 
 // 當前路徑是否匹配

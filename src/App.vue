@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import BottomNavigation from '@/components/BottomNavigation.vue'
-import FloatingCartButton from '@/components/FloatingCartButton.vue'
 
 const route = useRoute()
 
@@ -21,9 +20,6 @@ const showBottomNav = computed(() => {
     
     <!-- 底部導航 -->
     <BottomNavigation v-if="showBottomNav" />
-    
-    <!-- 漂浮購物車按鈕 -->
-    <FloatingCartButton />
   </div>
 </template>
 
