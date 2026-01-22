@@ -20,6 +20,12 @@ const navItems = [
     activeIcon: '🧊'
   },
   { 
+    name: '圖鑑', 
+    icon: '📖', 
+    path: '/ingredients',
+    activeIcon: '📖'
+  },
+  { 
     name: '食譜', 
     icon: '🍳', 
     path: '/recipes',
@@ -30,12 +36,6 @@ const navItems = [
     icon: '📅', 
     path: '/plan',
     activeIcon: '📅'
-  },
-  { 
-    name: '購物', 
-    icon: '🛒', 
-    path: '/shopping',
-    activeIcon: '🛒'
   },
 ]
 
