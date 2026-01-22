@@ -3,10 +3,19 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useShoppingList } from '@/composables/useShoppingList'
 import { useFoodStore } from '@/stores/food'
+import { usePlanStore } from '@/stores/plan' // Add import
 import { getIngredientImageUrl, hasLocalImage } from '@/composables/useIngredientImage'
 
 const router = useRouter()
 const foodStore = useFoodStore()
+const planStore = usePlanStore() // Add store
+
+// 檢查是否有安排食譜
+const hasPlannedMeals = computed(() => {
+  if (!planStore.currentPlan) return false
+  return Object.values(planStore.currentPlan.meals).some(ids => ids.length > 0)
+})
+
 const {
   shoppingList,
   thisWeekList,
@@ -90,8 +99,23 @@ function formatDateDisplay(dateStr: string): string {
 
     <!-- 內容區 -->
     <div class="px-4 py-4 space-y-4">
-      <!-- 空狀態 -->
-      <div v-if="shoppingList.length === 0" class="bg-white rounded-2xl shadow-md p-8 text-center">
+      <!-- 空狀態：尚未安排食譜 -->
+      <div v-if="!hasPlannedMeals" class="bg-white rounded-2xl shadow-md p-8 text-center text-gray-500">
+        <div class="text-5xl mb-4">👶</div>
+        <h3 class="text-lg font-semibold text-gray-700 mb-2">這周還沒有幫寶寶安排食譜唷!</h3>
+        <p class="text-sm mb-4">
+          讓我們一起和寶寶一起探索食物吧!
+        </p>
+        <router-link
+          to="/plan"
+          class="inline-block px-6 py-2 bg-purple-500 text-white rounded-xl text-sm hover:bg-purple-600 transition-colors"
+        >
+          前往安排食譜
+        </router-link>
+      </div>
+
+      <!-- 空狀態：食材充足 -->
+      <div v-else-if="shoppingList.length === 0" class="bg-white rounded-2xl shadow-md p-8 text-center">
         <div class="text-5xl mb-4">🎉</div>
         <h3 class="text-lg font-semibold text-gray-700 mb-2">冰箱食材充足！</h3>
         <p class="text-gray-500 text-sm mb-4">
