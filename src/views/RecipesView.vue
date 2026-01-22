@@ -95,10 +95,9 @@ const displayedRecipes = computed(() => {
       if (!userStore.isFavoriteRecipe(sr.recipe.id)) return false
     }
     
-    // Tag 5: 只顯示寶寶喜歡
+    // Tag 5: 只顯示寶寶愛（連動 RecipeDetailView 的評分）
     if (onlyLiked.value) {
-      // 檢查食譜的評分（這需要在 userStore 中有相關功能）
-      // 暫時跳過此篩選，除非有 babyRating 欄位
+      if (!userStore.isRecipeLiked(sr.recipe.id)) return false
     }
     
     return true

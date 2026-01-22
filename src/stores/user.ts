@@ -15,6 +15,11 @@ export interface IngredientState {
     note: string
 }
 
+/**
+ * 食譜評分類型
+ */
+export type RecipeRating = 'like' | 'normal' | 'dislike' | null
+
 const STORAGE_KEY = 'babymeal-passport-user'
 
 /**
@@ -40,6 +45,7 @@ function saveToStorage(data: {
     birthday: string
     ingredientStates: Record<string, IngredientState>
     favoriteRecipes: string[]
+    recipeRatings: Record<string, RecipeRating>
 }) {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
@@ -60,6 +66,9 @@ export const useUserStore = defineStore('user', () => {
     )
     const favoriteRecipes = ref<Set<string>>(
         new Set(savedData?.favoriteRecipes || [])
+    )
+    const recipeRatings = ref<Record<string, RecipeRating>>(
+        savedData?.recipeRatings || {}
     )
 
     // Getters
@@ -99,6 +108,12 @@ export const useUserStore = defineStore('user', () => {
     const allergyIngredientsCount = computed(() => {
         return Object.values(ingredientStates.value).filter(
             (state) => state.allergy
+        ).length
+    })
+
+    const likedRecipesCount = computed(() => {
+        return Object.values(recipeRatings.value).filter(
+            (rating) => rating === 'like'
         ).length
     })
 
@@ -154,15 +169,35 @@ export const useUserStore = defineStore('user', () => {
         return favoriteRecipes.value.has(recipeId)
     }
 
+    // Recipe Rating Actions
+    function setRecipeRating(recipeId: string, rating: RecipeRating) {
+        if (rating === null) {
+            delete recipeRatings.value[recipeId]
+        } else {
+            recipeRatings.value[recipeId] = rating
+        }
+        // 觸發響應式更新
+        recipeRatings.value = { ...recipeRatings.value }
+    }
+
+    function getRecipeRating(recipeId: string): RecipeRating {
+        return recipeRatings.value[recipeId] || null
+    }
+
+    function isRecipeLiked(recipeId: string): boolean {
+        return recipeRatings.value[recipeId] === 'like'
+    }
+
     // 監聽變化並自動儲存到 LocalStorage
     watch(
-        [babyName, birthday, ingredientStates, favoriteRecipes],
+        [babyName, birthday, ingredientStates, favoriteRecipes, recipeRatings],
         () => {
             saveToStorage({
                 babyName: babyName.value,
                 birthday: birthday.value,
                 ingredientStates: ingredientStates.value,
                 favoriteRecipes: [...favoriteRecipes.value],
+                recipeRatings: recipeRatings.value,
             })
         },
         { deep: true }
@@ -174,12 +209,14 @@ export const useUserStore = defineStore('user', () => {
         birthday,
         ingredientStates,
         favoriteRecipes,
+        recipeRatings,
 
         // Getters
         getAgeInMonths,
         getAgeDisplay,
         triedIngredientsCount,
         allergyIngredientsCount,
+        likedRecipesCount,
 
         // Actions
         setBabyInfo,
@@ -188,5 +225,8 @@ export const useUserStore = defineStore('user', () => {
         resetIngredientState,
         toggleFavoriteRecipe,
         isFavoriteRecipe,
+        setRecipeRating,
+        getRecipeRating,
+        isRecipeLiked,
     }
 })

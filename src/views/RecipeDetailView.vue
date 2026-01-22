@@ -2,7 +2,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useFoodStore } from '@/stores/food'
-import { useUserStore } from '@/stores/user'
+import { useUserStore, type RecipeRating } from '@/stores/user'
 import { usePantryStore } from '@/stores/pantry'
 import { getIngredientImageUrl as getLocalImageUrl, hasLocalImage } from '@/composables/useIngredientImage'
 import type { Ingredient, Recipe } from '@/types'
@@ -27,22 +27,19 @@ function getIngredientInfo(id: string): Ingredient {
   if (found) {
     return found
   }
-  // Fallback: 如果找不到，返回基本物件
   return {
     id,
-    name: id, // 顯示原始 ID 作為名稱
+    name: id,
     category: 'other',
     imageUrl: 'https://placehold.co/200x200?text=Food',
   }
 }
 
-// Helper: 取得食材圖片 URL（優先使用本地圖片）
+// Helper: 取得食材圖片 URL
 function getIngredientImageUrl(id: string): string {
-  // 優先使用本地圖片
   if (hasLocalImage(id)) {
     return getLocalImageUrl(id)
   }
-  // Fallback 到 JSON 中的 URL 或預設圖片
   const ingredient = getIngredientInfo(id)
   return ingredient.imageUrl || 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'
 }
@@ -51,6 +48,18 @@ function getIngredientImageUrl(id: string): string {
 const isFavorite = computed(() => {
   return recipe.value ? userStore.isFavoriteRecipe(recipe.value.id) : false
 })
+
+// 當前評分
+const currentRating = computed(() => {
+  return recipe.value ? userStore.getRecipeRating(recipe.value.id) : null
+})
+
+// 評分選項
+const ratingOptions: { value: 'like' | 'normal' | 'dislike'; emoji: string; label: string }[] = [
+  { value: 'like', emoji: '😋', label: '愛' },
+  { value: 'normal', emoji: '😐', label: '普通' },
+  { value: 'dislike', emoji: '🙁', label: '不愛' },
+]
 
 // 取得月齡標籤顏色
 function getAgeTagColor(minMonth: number): string {
@@ -71,9 +80,50 @@ function toggleFavorite() {
   }
 }
 
+// 設定評分
+function setRating(rating: RecipeRating) {
+  if (recipe.value) {
+    // 如果點擊相同評分，則取消
+    if (currentRating.value === rating) {
+      userStore.setRecipeRating(recipe.value.id, null)
+    } else {
+      userStore.setRecipeRating(recipe.value.id, rating)
+    }
+  }
+}
+
 // 導航到食材詳情
 function goToIngredient(id: string) {
   router.push(`/ingredient/${id}`)
+}
+
+// 取得食材狀態標籤
+function getIngredientBadges(id: string): { icon: string; label: string; color: string }[] {
+  const badges: { icon: string; label: string; color: string }[] = []
+  const ingredient = getIngredientInfo(id)
+  const state = userStore.getIngredientState(id)
+  
+  // 冰箱有
+  if (pantryStore.hasItem(id)) {
+    badges.push({ icon: '🧊', label: '冰箱有', color: 'bg-cyan-100 text-cyan-700' })
+  }
+  
+  // 已嘗試
+  if (state.status === 'tried') {
+    badges.push({ icon: '✅', label: '已嘗試', color: 'bg-green-100 text-green-700' })
+  }
+  
+  // 過敏
+  if (state.allergy) {
+    badges.push({ icon: '❗', label: '過敏', color: 'bg-red-100 text-red-700' })
+  }
+  
+  // 高風險
+  if (ingredient.allergy_risk) {
+    badges.push({ icon: '⚠️', label: '高風險', color: 'bg-orange-100 text-orange-700' })
+  }
+  
+  return badges
 }
 </script>
 
@@ -127,6 +177,32 @@ function goToIngredient(id: string) {
 
     <!-- 內容區 -->
     <div class="container mx-auto px-4 py-6 space-y-6">
+      <!-- 寶寶愛評分 -->
+      <div class="bg-white rounded-2xl p-5 shadow-md">
+        <h2 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <span class="text-xl">👶</span>
+          寶寶愛嗎？
+        </h2>
+        <div class="flex gap-3">
+          <button
+            v-for="option in ratingOptions"
+            :key="option.value"
+            @click="setRating(option.value)"
+            class="flex-1 py-3 px-4 rounded-xl font-medium transition-all flex flex-col items-center gap-1"
+            :class="currentRating === option.value
+              ? option.value === 'like'
+                ? 'bg-green-100 ring-2 ring-green-500 text-green-700'
+                : option.value === 'normal'
+                  ? 'bg-gray-100 ring-2 ring-gray-400 text-gray-700'
+                  : 'bg-red-100 ring-2 ring-red-500 text-red-700'
+              : 'bg-gray-50 text-gray-500 hover:bg-gray-100'"
+          >
+            <span class="text-2xl">{{ option.emoji }}</span>
+            <span class="text-sm">{{ option.label }}</span>
+          </button>
+        </div>
+      </div>
+
       <!-- 所需食材 -->
       <div class="bg-white rounded-2xl p-5 shadow-md">
         <h2 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
@@ -134,44 +210,57 @@ function goToIngredient(id: string) {
           所需食材 ({{ recipe.ingredient_ids.length }})
         </h2>
 
-        <div class="grid grid-cols-4 gap-3">
+        <div class="grid grid-cols-2 gap-4">
           <div
             v-for="id in recipe.ingredient_ids"
             :key="id"
             @click="goToIngredient(id)"
-            class="flex flex-col items-center cursor-pointer hover:scale-105 transition-transform"
+            class="flex items-start gap-3 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"
+            :class="{
+              'ring-2 ring-red-400': userStore.getIngredientState(id).allergy
+            }"
           >
             <!-- 食材圖片 -->
             <div
-              class="w-14 h-14 rounded-xl overflow-hidden mb-1 ring-2 bg-white"
-              :class="pantryStore.hasItem(id) ? 'ring-green-400' : 'ring-gray-200'"
+              class="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-white ring-2"
+              :class="pantryStore.hasItem(id) ? 'ring-cyan-400' : 'ring-gray-200'"
             >
               <img
                 :src="getIngredientImageUrl(id)"
                 :alt="getIngredientInfo(id).name"
                 class="w-full h-full object-contain"
-                @error="$event.target.src = 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'"
+                @error="($event.target as HTMLImageElement).src = 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'"
               />
             </div>
             
-            <!-- 食材名稱 -->
-            <span class="text-xs text-center text-gray-700 truncate w-full">
-              {{ getIngredientInfo(id).name }}
-            </span>
-            
-            <!-- 狀態標記 -->
-            <span
-              v-if="pantryStore.hasItem(id)"
-              class="text-xs text-green-600"
-            >
-              ✓ 有
-            </span>
-            <span
-              v-else
-              class="text-xs text-orange-500"
-            >
-              需購買
-            </span>
+            <!-- 食材資訊 -->
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-gray-800 truncate">
+                {{ getIngredientInfo(id).name }}
+              </p>
+              
+              <!-- 狀態標籤 -->
+              <div class="flex flex-wrap gap-1 mt-1">
+                <span
+                  v-for="badge in getIngredientBadges(id)"
+                  :key="badge.label"
+                  class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs"
+                  :class="badge.color"
+                >
+                  <span>{{ badge.icon }}</span>
+                  <span>{{ badge.label }}</span>
+                </span>
+                
+                <!-- 需購買標籤（只在沒有其他標籤時顯示） -->
+                <span
+                  v-if="getIngredientBadges(id).length === 0 || (!pantryStore.hasItem(id) && getIngredientBadges(id).every(b => b.label !== '冰箱有'))"
+                  class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-xs bg-orange-100 text-orange-700"
+                >
+                  <span>🛒</span>
+                  <span>需購買</span>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -228,17 +317,23 @@ function goToIngredient(id: string) {
     <div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex gap-3">
       <button
         @click="toggleFavorite"
-        class="flex-1 py-3 rounded-xl font-medium transition-colors"
+        class="flex-1 py-3 rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
         :class="isFavorite
           ? 'bg-red-100 text-red-600'
           : 'bg-gray-100 text-gray-600'"
       >
-        {{ isFavorite ? '❤️ 已收藏' : '🤍 加入收藏' }}
+        <span>{{ isFavorite ? '❤️' : '🤍' }}</span>
+        <span>{{ isFavorite ? '已收藏' : '收藏' }}</span>
       </button>
       <button
-        class="flex-1 py-3 rounded-xl bg-primary-500 text-white font-medium"
+        @click="setRating('like')"
+        class="flex-1 py-3 rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
+        :class="currentRating === 'like'
+          ? 'bg-green-500 text-white'
+          : 'bg-green-100 text-green-700'"
       >
-        📋 加入週計畫
+        <span>😋</span>
+        <span>{{ currentRating === 'like' ? '寶寶愛!' : '寶寶愛' }}</span>
       </button>
     </div>
 
