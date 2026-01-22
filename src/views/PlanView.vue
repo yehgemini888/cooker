@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { usePlanStore } from '@/stores/plan'
 import { useFoodStore } from '@/stores/food'
 import { usePantryStore } from '@/stores/pantry'
+import { useUserStore } from '@/stores/user'
 import { useSmartRecipes } from '@/composables/useSmartRecipes'
 import { getIngredientImageUrl, hasLocalImage } from '@/composables/useIngredientImage'
 import type { Recipe } from '@/types'
@@ -12,12 +13,82 @@ const router = useRouter()
 const planStore = usePlanStore()
 const foodStore = useFoodStore()
 const pantryStore = usePantryStore()
+const userStore = useUserStore()
 const { scoredRecipes } = useSmartRecipes()
 
 // ===== 模式狀態 =====
 const showWizard = ref(false)
 const showAddRecipePanel = ref(false)
 const recipeSearchQuery = ref('')
+
+// ===== Wizard 篩選狀態 =====
+const ageFilter = ref<string>('all')
+const ageOptions = [
+  { value: 'all', label: '全部' },
+  { value: '4-6', label: '4-6M' },
+  { value: '7-9', label: '7-9M' },
+  { value: '10-12', label: '10-12M' },
+  { value: '12+', label: '1Y+' },
+]
+const ingredientFilter = ref<string>('')
+const showIngredientDropdown = ref(false)
+const ingredientSearchQuery = ref('')
+const onlyAvailable = ref(false)
+const onlyFavorites = ref(false)
+const onlyLiked = ref(false)
+
+// 搜尋過濾後的食材列表
+const filteredIngredientOptions = computed(() => {
+  const query = ingredientSearchQuery.value.toLowerCase()
+  if (!query) return foodStore.ingredients.slice(0, 20)
+  return foodStore.ingredients.filter(ing => 
+    ing.name.toLowerCase().includes(query)
+  ).slice(0, 20)
+})
+
+const selectedIngredientName = computed(() => {
+  if (!ingredientFilter.value) return ''
+  const ing = foodStore.getIngredientById(ingredientFilter.value)
+  return ing?.name || ''
+})
+
+function selectIngredient(ingredientId: string) {
+  ingredientFilter.value = ingredientId
+  showIngredientDropdown.value = false
+  ingredientSearchQuery.value = ''
+}
+
+function clearIngredientFilter() {
+  ingredientFilter.value = ''
+  ingredientSearchQuery.value = ''
+}
+
+// Wizard 篩選後的食譜
+const wizardFilteredRecipes = computed(() => {
+  return scoredRecipes.value.filter(sr => {
+    // Tag 1: 分齡篩選
+    if (ageFilter.value !== 'all') {
+      const minMonth = sr.recipe.min_month
+      const maxMonth = sr.recipe.max_month
+      switch (ageFilter.value) {
+        case '4-6': if (minMonth > 6) return false; break;
+        case '7-9': if (maxMonth < 7 || minMonth > 9) return false; break;
+        case '10-12': if (maxMonth < 10 || minMonth > 12) return false; break;
+        case '12+': if (maxMonth < 12) return false; break;
+      }
+    }
+    // Tag 2: 食材篩選
+    if (ingredientFilter.value && !sr.recipe.ingredient_ids.includes(ingredientFilter.value)) return false
+    // Tag 3: 只顯示可做的
+    if (onlyAvailable.value && !sr.readyToCook) return false
+    // Tag 4: 只顯示收藏
+    if (onlyFavorites.value && !userStore.isFavoriteRecipe(sr.recipe.id)) return false
+    // Tag 5: 只顯示寶寶愛
+    if (onlyLiked.value && !userStore.isRecipeLiked(sr.recipe.id)) return false
+    
+    return true
+  })
+})
 
 // ===== 月曆狀態 =====
 const currentMonth = ref(new Date())
@@ -222,6 +293,13 @@ function openWizard() {
   wizardSelectedDates.value = new Set()
   wizardSelectedRecipes.value = new Set()
   wizardAssignments.value = {}
+  
+  // 重置篩選
+  ageFilter.value = 'all'
+  ingredientFilter.value = ''
+  onlyAvailable.value = false
+  onlyFavorites.value = false
+  onlyLiked.value = false
 }
 
 function closeWizard() {
@@ -511,7 +589,7 @@ const selectedRecipesList = computed(() =>
     <button
       v-if="!showWizard && !showAddRecipePanel"
       @click="openWizard"
-      class="fixed bottom-24 right-4 z-10 px-5 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 flex items-center gap-2 font-medium"
+      class="fixed bottom-24 left-1/2 -translate-x-1/2 z-10 px-5 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 flex items-center gap-2 font-medium"
     >
       <span>✨</span>
       <span>智慧引導</span>
@@ -540,7 +618,7 @@ const selectedRecipesList = computed(() =>
       <div v-if="wizardStep === 1" class="bg-white rounded-2xl shadow-md p-4 space-y-4">
         <div>
           <h3 class="font-semibold text-gray-800">📆 Step 1: 選擇日期</h3>
-          <p class="text-sm text-gray-500">點擊選擇要安排的日期（可多選）</p>
+          <p class="text-sm text-gray-500">只能選擇今日及未來的日期</p>
         </div>
         
         <div class="flex items-center justify-between">
@@ -558,47 +636,161 @@ const selectedRecipesList = computed(() =>
           <div
             v-for="day in calendarDays"
             :key="day.date"
-            @click="day.isCurrentMonth && toggleWizardDate(day.date)"
-            class="aspect-square p-1 rounded-lg cursor-pointer transition-all flex items-center justify-center"
+            @click="!day.isPast && day.isCurrentMonth && toggleWizardDate(day.date)"
+            class="aspect-square p-1 rounded-lg transition-all flex items-center justify-center relative"
             :class="{
-              'bg-orange-500 text-white': wizardSelectedDates.has(day.date),
-              'hover:bg-gray-100': !wizardSelectedDates.has(day.date) && day.isCurrentMonth,
+              'bg-orange-500 text-white shadow-md transform scale-105': wizardSelectedDates.has(day.date),
+              'hover:bg-gray-100 cursor-pointer': !wizardSelectedDates.has(day.date) && day.isCurrentMonth && !day.isPast,
               'text-gray-300 cursor-not-allowed': !day.isCurrentMonth,
+              'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50': day.isPast && day.isCurrentMonth,
+              'ring-2 ring-purple-400 font-bold text-purple-600': day.isToday && !wizardSelectedDates.has(day.date)
             }"
           >
             <span class="text-sm">{{ day.day }}</span>
+            <span v-if="day.isToday && !wizardSelectedDates.has(day.date)" class="absolute -bottom-1 text-[10px] scale-75">今天</span>
           </div>
         </div>
         
-        <p class="text-sm text-purple-600">已選擇 {{ wizardSelectedDates.size }} 個日期</p>
+        <p class="text-sm text-purple-600 font-medium text-center bg-purple-50 py-2 rounded-lg">已選擇 {{ wizardSelectedDates.size }} 個日期</p>
       </div>
 
       <!-- Step 2: 選食譜 -->
       <div v-if="wizardStep === 2" class="space-y-4">
-        <div class="bg-white rounded-2xl shadow-md p-4">
-          <h3 class="font-semibold text-gray-800">🍳 Step 2: 選擇食譜</h3>
-          <p class="text-sm text-gray-500">已選 {{ wizardSelectedRecipes.size }} 道</p>
+        <div class="bg-white rounded-2xl shadow-md p-4 space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="font-semibold text-gray-800">🍳 Step 2: 選擇食譜</h3>
+            <span class="text-sm text-gray-500">已選 {{ wizardSelectedRecipes.size }} 道</span>
+          </div>
+
+          <!-- 篩選器區域 -->
+          <div class="space-y-3 pt-2 border-t">
+            <!-- Row 1: 分齡區段 -->
+            <div class="flex gap-1 overflow-x-auto scrollbar-hide pb-1">
+              <button
+                v-for="option in ageOptions"
+                :key="option.value"
+                @click="ageFilter = option.value"
+                class="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium transition-all border"
+                :class="ageFilter === option.value
+                  ? 'bg-purple-500 text-white border-purple-500'
+                  : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'"
+              >
+                {{ option.label }}
+              </button>
+            </div>
+
+            <!-- Row 2: 其他篩選 -->
+            <div class="flex gap-2 flex-wrap">
+              <!-- 食材篩選下拉 -->
+              <div class="relative">
+                <button
+                  @click="showIngredientDropdown = !showIngredientDropdown"
+                  class="px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1 border"
+                  :class="ingredientFilter
+                    ? 'bg-cyan-500 text-white border-cyan-500'
+                    : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'"
+                >
+                  <span>🥕</span>
+                  <span>{{ selectedIngredientName || '選擇食材' }}</span>
+                  <span v-if="ingredientFilter" @click.stop="clearIngredientFilter" class="ml-1">✕</span>
+                </button>
+                
+                <!-- 下拉選單 -->
+                <div
+                  v-if="showIngredientDropdown"
+                  class="absolute top-full left-0 mt-1 w-64 bg-white rounded-xl shadow-xl border z-30 max-h-64 overflow-hidden"
+                >
+                  <div class="p-2 border-b">
+                    <input
+                      v-model="ingredientSearchQuery"
+                      type="text"
+                      placeholder="搜尋食材..."
+                      class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      @click.stop
+                    />
+                  </div>
+                  <div class="max-h-48 overflow-y-auto">
+                    <button
+                      v-for="ing in filteredIngredientOptions"
+                      :key="ing.id"
+                      @click="selectIngredient(ing.id)"
+                      class="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2"
+                      :class="{ 'bg-cyan-50': ingredientFilter === ing.id }"
+                    >
+                      <span>{{ ing.name }}</span>
+                      <span v-if="pantryStore.hasItem(ing.id)" class="text-xs text-cyan-500">🧊</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                @click="onlyAvailable = !onlyAvailable"
+                class="px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1 border"
+                :class="onlyAvailable
+                  ? 'bg-green-500 text-white border-green-500'
+                  : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'"
+              >
+                <span>🧊</span> 可做
+              </button>
+
+              <button
+                @click="onlyFavorites = !onlyFavorites"
+                class="px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1 border"
+                :class="onlyFavorites
+                  ? 'bg-red-500 text-white border-red-500'
+                  : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'"
+              >
+                <span>❤️</span> 收藏
+              </button>
+
+              <button
+                @click="onlyLiked = !onlyLiked"
+                class="px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1 border"
+                :class="onlyLiked
+                  ? 'bg-yellow-500 text-white border-yellow-500'
+                  : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'"
+              >
+                <span>😋</span> 寶寶愛
+              </button>
+            </div>
+            
+            <!-- 點擊外部關閉下拉選單 (簡易遮罩) -->
+            <div v-if="showIngredientDropdown" @click="showIngredientDropdown = false" class="fixed inset-0 z-20" style="background: transparent;"></div>
+          </div>
         </div>
         
-        <div class="space-y-3 max-h-[50vh] overflow-y-auto">
+        <div class="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
+          <div v-if="wizardFilteredRecipes.length === 0" class="text-center py-8 text-gray-500">
+            沒有符合篩選條件的食譜
+          </div>
           <div
-            v-for="sr in scoredRecipes.slice(0, 30)"
+            v-else
+            v-for="sr in wizardFilteredRecipes"
             :key="sr.recipe.id"
             @click="toggleWizardRecipe(sr.recipe.id)"
-            class="bg-white rounded-xl shadow-md p-4 cursor-pointer transition-all"
-            :class="wizardSelectedRecipes.has(sr.recipe.id) ? 'ring-2 ring-purple-500 bg-purple-50' : 'hover:shadow-lg'"
+            class="bg-white rounded-xl shadow-sm p-4 cursor-pointer transition-all border border-transparent"
+            :class="wizardSelectedRecipes.has(sr.recipe.id) ? 'ring-2 ring-purple-500 bg-purple-50' : 'hover:shadow-md hover:border-purple-100'"
           >
             <div class="flex items-start justify-between">
               <div>
                 <h4 class="font-medium text-gray-800">{{ sr.recipe.title }}</h4>
-                <p class="text-xs text-gray-500">{{ sr.recipe.min_month }}-{{ sr.recipe.max_month }}M</p>
+                <div class="flex gap-2 text-xs mt-1">
+                  <span class="px-1.5 py-0.5 bg-gray-100 rounded text-gray-600">{{ sr.recipe.min_month }}-{{ sr.recipe.max_month }}M</span>
+                  <span v-if="sr.readyToCook" class="px-1.5 py-0.5 bg-green-100 text-green-700 rounded">可立即做</span>
+                  <span v-if="userStore.isFavoriteRecipe(sr.recipe.id)" class="px-1.5 py-0.5 bg-red-100 text-red-700 rounded">已收藏</span>
+                </div>
               </div>
-              <span v-if="wizardSelectedRecipes.has(sr.recipe.id)" class="text-purple-500 text-xl">✓</span>
+              <span v-if="wizardSelectedRecipes.has(sr.recipe.id)" class="text-purple-500 text-xl font-bold">✓</span>
+              <span v-else class="text-gray-200 text-xl">+</span>
             </div>
-            <div v-if="getMissingIngredients(sr.recipe).length > 0" class="mt-2 text-xs text-orange-600">
-              缺: {{ getMissingIngredients(sr.recipe).slice(0, 3).join(', ') }}
+            <div v-if="getMissingIngredients(sr.recipe).length > 0" class="mt-2 text-xs text-orange-600 flex items-center gap-1">
+              <span>⚠️ 缺:</span>
+              <span class="truncate max-w-[200px]">{{ getMissingIngredients(sr.recipe).slice(0, 3).join('、') }}</span>
             </div>
-            <div v-else class="mt-2 text-xs text-green-600">✅ 食材齊全</div>
+            <div v-else class="mt-2 text-xs text-green-600 flex items-center gap-1">
+               <span>✅ 食材齊全</span>
+            </div>
           </div>
         </div>
       </div>
