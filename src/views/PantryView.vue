@@ -1,183 +1,175 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { usePantryStore } from '@/stores/pantry'
 import { useFoodStore } from '@/stores/food'
 import { useRouter } from 'vue-router'
 import { getIngredientImageUrl, hasLocalImage } from '@/composables/useIngredientImage'
-import IngredientPickerModal from '@/components/IngredientPickerModal.vue'
+import type { Ingredient } from '@/types'
 
 const router = useRouter()
 const pantryStore = usePantryStore()
 const foodStore = useFoodStore()
 
-// Modal 狀態
-const showPickerModal = ref(false)
+// 分類設定
+const categories = [
+  { id: 'grain', label: '穀物類', emoji: '🌾', color: 'amber' },
+  { id: 'vegetable', label: '蔬菜類', emoji: '🥬', color: 'green' },
+  { id: 'fruit', label: '水果類', emoji: '🍎', color: 'pink' },
+  { id: 'protein', label: '蛋白質類', emoji: '🥩', color: 'red' },
+  { id: 'dairy', label: '乳製品類', emoji: '🥛', color: 'purple' },
+  { id: 'other', label: '其他', emoji: '🧂', color: 'gray' },
+]
 
-// 開啟食材選擇 Modal
-function openPicker() {
-  showPickerModal.value = true
+// 按分類取得食材
+function getIngredientsByCategory(categoryId: string): Ingredient[] {
+  return foodStore.ingredients.filter(ing => ing.category === categoryId)
 }
 
-// 關閉食材選擇 Modal
-function closePicker() {
-  showPickerModal.value = false
+// 檢查是否在冰箱中
+function isInPantry(ingredientId: string): boolean {
+  return pantryStore.hasItem(ingredientId)
 }
 
-// 取得冰箱內的食材詳細資料
-const pantryItems = computed(() => {
-  // pantryStore.pantryStock 是一個 Set<string>，包含食材 ID
-  const ids = Array.from(pantryStore.pantryStock)
-  return ids.map(ingredientId => {
-    const ingredient = foodStore.getIngredientById(ingredientId)
-    return {
-      ingredientId,
-      ingredient,
-      imageUrl: hasLocalImage(ingredientId) 
-        ? getIngredientImageUrl(ingredientId)
-        : ingredient?.imageUrl || 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'
-    }
-  }).filter(item => item.ingredient) // 過濾掉找不到的食材
-})
-
-// 按分類分組
-const groupedItems = computed(() => {
-  const groups: Record<string, typeof pantryItems.value> = {}
-  pantryItems.value.forEach(item => {
-    const category = item.ingredient?.category || 'other'
-    if (!groups[category]) groups[category] = []
-    groups[category].push(item)
-  })
-  return groups
-})
-
-// 分類標籤
-const categoryLabels: Record<string, { label: string, emoji: string }> = {
-  grain: { label: '穀物類', emoji: '🌾' },
-  vegetable: { label: '蔬菜類', emoji: '🥬' },
-  fruit: { label: '水果類', emoji: '🍎' },
-  protein: { label: '蛋白質類', emoji: '🥩' },
-  dairy: { label: '乳製品類', emoji: '🥛' },
-  other: { label: '其他', emoji: '🧂' },
+// 切換食材狀態
+function toggleIngredient(ingredientId: string) {
+  pantryStore.toggleItem(ingredientId)
 }
 
-// 移除冰箱項目
-function removeItem(ingredientId: string) {
-  pantryStore.removeItem(ingredientId)
+// 取得圖片 URL
+function getImageUrl(ingredient: Ingredient): string {
+  if (hasLocalImage(ingredient.id)) {
+    return getIngredientImageUrl(ingredient.id)
+  }
+  return ingredient.imageUrl || 'https://placehold.co/80x80/e2e8f0/64748b?text=Food'
 }
 
 // 導航到食材詳情
 function goToIngredient(ingredientId: string) {
   router.push(`/ingredient/${ingredientId}`)
 }
+
+// 統計
+const totalInPantry = computed(() => pantryStore.getStockCount())
+const totalIngredients = computed(() => foodStore.ingredients.length)
+
+// 清空冰箱
+function clearPantry() {
+  if (confirm('確定要清空冰箱嗎？')) {
+    pantryStore.clearAll()
+  }
+}
 </script>
 
 <template>
   <div class="min-h-screen bg-gradient-to-br from-cyan-50 to-blue-50 pb-24">
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-20">
-      <div class="container mx-auto px-4 py-4">
-        <div class="flex items-center justify-center">
-          <h1 class="text-xl font-bold text-gray-800">🧊 我的冰箱</h1>
+    <header class="bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg sticky top-0 z-20">
+      <div class="px-4 py-4">
+        <div class="flex items-center justify-between">
+          <h1 class="text-xl font-bold flex items-center gap-2">
+            <span>🧊</span>
+            <span>我的冰箱</span>
+          </h1>
+          <div class="flex items-center gap-3">
+            <div class="text-right">
+              <p class="text-2xl font-bold">{{ totalInPantry }}</p>
+              <p class="text-xs opacity-80">/ {{ totalIngredients }} 種食材</p>
+            </div>
+            <button
+              v-if="totalInPantry > 0"
+              @click="clearPantry"
+              class="px-3 py-1 text-xs bg-white/20 hover:bg-white/30 rounded-full transition-colors"
+            >
+              清空
+            </button>
+          </div>
         </div>
       </div>
     </header>
 
-    <!-- 統計 -->
-    <div class="container mx-auto px-4 py-4">
-      <div class="bg-white rounded-2xl shadow-md p-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <p class="text-sm text-gray-500">冰箱庫存</p>
-            <p class="text-3xl font-bold text-cyan-600">{{ pantryItems.length }}</p>
-            <p class="text-xs text-gray-400">種食材</p>
-          </div>
-          <button
-            @click="openPicker"
-            class="px-4 py-2 bg-cyan-500 text-white rounded-xl font-medium hover:bg-cyan-600 transition-colors flex items-center gap-1"
-          >
-            <span>➕</span>
-            <span>新增食材</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- 冰箱內容 -->
-    <div class="container mx-auto px-4">
-      <!-- 有項目時 -->
-      <template v-if="pantryItems.length > 0">
-        <div 
-          v-for="(items, category) in groupedItems" 
-          :key="category"
-          class="mb-6"
-        >
-          <!-- 分類標題 -->
-          <h2 class="text-sm font-semibold text-gray-600 mb-3 flex items-center gap-2">
-            <span>{{ categoryLabels[category]?.emoji || '📦' }}</span>
-            <span>{{ categoryLabels[category]?.label || category }}</span>
-            <span class="text-gray-400">({{ items.length }})</span>
-          </h2>
-          
-          <!-- 食材卡片 -->
-          <div class="grid grid-cols-3 gap-3">
-            <div
-              v-for="item in items"
-              :key="item.ingredientId"
-              class="bg-white rounded-xl shadow-md overflow-hidden relative group"
-            >
-              <!-- 刪除按鈕 -->
-              <button
-                @click.stop="removeItem(item.ingredientId)"
-                class="absolute top-1 right-1 z-10 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                ✕
-              </button>
-              
-              <!-- 圖片 -->
-              <div 
-                @click="goToIngredient(item.ingredientId)"
-                class="aspect-square bg-white p-2 cursor-pointer"
-              >
-                <img
-                  :src="item.imageUrl"
-                  :alt="item.ingredient?.name"
-                  class="w-full h-full object-contain"
-                  @error="($event.target as HTMLImageElement).src = 'https://placehold.co/200x200/e2e8f0/64748b?text=Food'"
-                />
-              </div>
-              
-              <!-- 名稱 -->
-              <div class="p-2 text-center">
-                <p class="text-sm font-medium text-gray-800 truncate">
-                  {{ item.ingredient?.name }}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </template>
-
-      <!-- 空狀態 -->
+    <!-- 食材列表（全螢幕寬度） -->
+    <div class="px-4 py-4 space-y-6">
       <div
-        v-else
-        class="text-center py-16"
+        v-for="category in categories"
+        :key="category.id"
+        v-show="getIngredientsByCategory(category.id).length > 0"
+        class="bg-white rounded-2xl shadow-md overflow-hidden"
       >
-        <div class="text-6xl mb-4">🧊</div>
-        <h3 class="text-lg font-semibold text-gray-700 mb-2">冰箱是空的</h3>
-        <p class="text-gray-500 mb-6">點擊下方按鈕新增食材吧！</p>
-        <button
-          @click="openPicker"
-          class="px-6 py-3 bg-cyan-500 text-white rounded-xl font-medium hover:bg-cyan-600 transition-colors"
+        <!-- 分類標題 -->
+        <div 
+          class="px-4 py-3 flex items-center justify-between"
+          :class="{
+            'bg-amber-50': category.color === 'amber',
+            'bg-green-50': category.color === 'green',
+            'bg-pink-50': category.color === 'pink',
+            'bg-red-50': category.color === 'red',
+            'bg-purple-50': category.color === 'purple',
+            'bg-gray-50': category.color === 'gray',
+          }"
         >
-          ➕ 新增食材
-        </button>
+          <h2 class="font-semibold text-gray-700 flex items-center gap-2">
+            <span class="text-lg">{{ category.emoji }}</span>
+            <span>{{ category.label }}</span>
+          </h2>
+          <span class="text-sm text-gray-500">
+            {{ getIngredientsByCategory(category.id).filter(i => isInPantry(i.id)).length }}
+            / {{ getIngredientsByCategory(category.id).length }}
+          </span>
+        </div>
+
+        <!-- 食材格子 -->
+        <div class="p-3 grid grid-cols-4 gap-2">
+          <div
+            v-for="ingredient in getIngredientsByCategory(category.id)"
+            :key="ingredient.id"
+            class="relative"
+          >
+            <!-- 勾選按鈕 -->
+            <button
+              @click="toggleIngredient(ingredient.id)"
+              class="w-full aspect-square rounded-xl border-2 p-1 transition-all duration-200 flex flex-col items-center justify-center"
+              :class="isInPantry(ingredient.id)
+                ? 'border-cyan-500 bg-cyan-50 shadow-md'
+                : 'border-gray-200 bg-white hover:border-gray-300'"
+            >
+              <!-- 勾選圖示 -->
+              <div
+                v-if="isInPantry(ingredient.id)"
+                class="absolute top-1 right-1 w-5 h-5 bg-cyan-500 rounded-full flex items-center justify-center"
+              >
+                <span class="text-white text-xs">✓</span>
+              </div>
+              
+              <!-- 食材圖片 -->
+              <img
+                :src="getImageUrl(ingredient)"
+                :alt="ingredient.name"
+                class="w-10 h-10 object-contain"
+                :class="{ 'opacity-40 grayscale': !isInPantry(ingredient.id) }"
+                loading="lazy"
+                @error="($event.target as HTMLImageElement).src = 'https://placehold.co/80x80/e2e8f0/64748b?text=Food'"
+              />
+              
+              <!-- 食材名稱 -->
+              <p 
+                class="text-xs mt-1 text-center truncate w-full px-1"
+                :class="isInPantry(ingredient.id) ? 'text-gray-800 font-medium' : 'text-gray-400'"
+              >
+                {{ ingredient.name }}
+              </p>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- 食材選擇 Modal -->
-    <IngredientPickerModal 
-      :visible="showPickerModal" 
-      @close="closePicker"
-    />
+    <!-- 底部提示 -->
+    <div v-if="totalInPantry === 0" class="px-4 mt-8">
+      <div class="bg-white rounded-2xl shadow-md p-6 text-center">
+        <div class="text-5xl mb-3">🧊</div>
+        <h3 class="text-lg font-semibold text-gray-700 mb-2">冰箱是空的</h3>
+        <p class="text-gray-500 text-sm">點擊上方食材加入冰箱庫存</p>
+      </div>
+    </div>
   </div>
 </template>
