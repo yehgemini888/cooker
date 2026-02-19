@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="BabyMeal Passport - 寶寶副食品管理應用程式，追蹤寶寶的飲食歷程">
     <title>BabyMeal Passport 副食品管理</title>
+    <script type="text/javascript">
+      // 接收來自 404.html 的 SPA 路由重新導向
+      (function(l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search.slice(1).split('&').map(function(s) {
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
     <script type="module" crossorigin src="/cooker/assets/index-CEy-RJEF.js"></script>
     <link rel="stylesheet" crossorigin href="/cooker/assets/index-7DULVI3G.css">
   </head>
