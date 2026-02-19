@@ -57,6 +57,9 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const { data, error: err } = await supabase.auth.signInWithPassword({ email, password })
       if (err) throw err
+      // 立即設定 user，不等 onAuthStateChange 回呼
+      session.value = data.session
+      user.value = data.user
       return data
     } catch (err: any) {
       error.value = err.message
