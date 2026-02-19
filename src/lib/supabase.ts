@@ -4,15 +4,13 @@ import type { Database } from '@/types/database'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
+export const isSupabaseConfigured = !!(supabaseUrl && supabaseAnonKey)
+
 let supabaseInstance
 
-if (!supabaseUrl || !supabaseAnonKey) {
+if (!isSupabaseConfigured) {
   console.warn('Supabase environment variables not set. Auth features will be disabled.')
-  // 創建一個 dummy client 以避免應用崩潰
-  supabaseInstance = createClient<Database>(
-    'https://dummy.supabase.co',
-    'dummy-key'
-  )
+  supabaseInstance = createClient<Database>('https://placeholder.supabase.co', 'placeholder')
 } else {
   supabaseInstance = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     auth: {

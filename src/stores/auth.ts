@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { supabase } from '@/lib/supabase'
+import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 import type { User, Session, AuthChangeEvent } from '@supabase/supabase-js'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -13,6 +13,10 @@ export const useAuthStore = defineStore('auth', () => {
 
   // 初始化：監聽 Auth 狀態變化
   async function initialize() {
+    if (!isSupabaseConfigured) {
+      console.warn('Supabase not configured, skipping auth initialization')
+      return
+    }
     try {
       // 1. 取得當前 session
       const { data: { session: currentSession } } = await supabase.auth.getSession()

@@ -12,10 +12,19 @@ const userStore = useUserStore()
 const authReady = ref(false)
 
 onMounted(async () => {
-  await authStore.initialize()
-  // 若已有登入 session（重新整理頁面），自動從雲端載入資料
-  if (authStore.isLoggedIn) {
-    await userStore.loadFromCloud()
+  try {
+    // 最多等 5 秒，避免 Supabase 連線失敗時無限卡住
+    await Promise.race([
+      (async () => {
+        await authStore.initialize()
+        if (authStore.isLoggedIn) {
+          await userStore.loadFromCloud()
+        }
+      })(),
+      new Promise(resolve => setTimeout(resolve, 5000))
+    ])
+  } catch (e) {
+    console.error('Auth init error:', e)
   }
   authReady.value = true
 })
