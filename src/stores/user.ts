@@ -215,6 +215,7 @@ export const useUserStore = defineStore('user', () => {
 
         try {
             const userId = authStore.user.id
+            console.log('🔄 loadFromCloud starting, userId:', userId)
 
             // 1. 載入 Baby Profile
             const { data: babyProfile, error: babyError } = await supabase
@@ -224,10 +225,13 @@ export const useUserStore = defineStore('user', () => {
                 .eq('is_active', true)
                 .maybeSingle()
 
+            console.log('📦 babyProfile result:', babyProfile, 'error:', babyError)
+
             if (babyError) throw babyError
 
             if (babyProfile) {
                 const profile = babyProfile as any
+                console.log('✅ Baby profile loaded:', profile)
                 babyProfileId.value = profile.id
                 babyName.value = profile.name
                 birthday.value = profile.birthday
@@ -303,7 +307,8 @@ export const useUserStore = defineStore('user', () => {
                 }
             }
         } catch (err: any) {
-            console.error('Failed to load from cloud:', err)
+            console.error('❌ Failed to load from cloud:', err)
+            console.error('❌ Error details:', JSON.stringify(err))
             syncError.value = err.message
             // 失敗時繼續使用本地資料
         } finally {
