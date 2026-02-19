@@ -4,13 +4,19 @@ import { RouterView, useRoute } from 'vue-router'
 import BottomNavigation from '@/components/BottomNavigation.vue'
 import AuthView from '@/views/AuthView.vue'
 import { useAuthStore } from '@/stores/auth'
+import { useUserStore } from '@/stores/user'
 
 const route = useRoute()
 const authStore = useAuthStore()
+const userStore = useUserStore()
 const authReady = ref(false)
 
 onMounted(async () => {
   await authStore.initialize()
+  // 若已有登入 session（重新整理頁面），自動從雲端載入資料
+  if (authStore.isLoggedIn) {
+    await userStore.loadFromCloud()
+  }
   authReady.value = true
 })
 
