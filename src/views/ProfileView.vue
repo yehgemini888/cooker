@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore, type IngredientState } from '@/stores/user'
 import { useFoodStore } from '@/stores/food'
 import { usePantryStore } from '@/stores/pantry'
+import { useAuthStore } from '@/stores/auth'
 import { getIngredientImageUrl, hasLocalImage } from '@/composables/useIngredientImage'
 import type { Ingredient } from '@/types'
 
@@ -11,6 +12,12 @@ const router = useRouter()
 const userStore = useUserStore()
 const foodStore = useFoodStore()
 const pantryStore = usePantryStore()
+const authStore = useAuthStore()
+
+async function handleSignOut() {
+  await authStore.signOut()
+  router.push('/auth')
+}
 
 // 編輯模式
 const isEditingProfile = ref(false)
@@ -109,8 +116,19 @@ function isHighRisk(ingredient: Ingredient): boolean {
     <!-- Header -->
     <header class="bg-white shadow-sm sticky top-0 z-20">
       <div class="container mx-auto px-4 py-4">
-        <div class="flex items-center justify-center">
+        <div class="flex items-center justify-between">
+          <div class="w-10"></div>
           <h1 class="text-xl font-bold text-gray-800">👶 寶寶資料</h1>
+          <button
+            @click="handleSignOut"
+            :disabled="authStore.loading"
+            class="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+            title="登出"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
         </div>
       </div>
     </header>
