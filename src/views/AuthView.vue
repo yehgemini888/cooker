@@ -10,6 +10,7 @@ const userStore = useUserStore()
 
 // Tab 切換
 const activeTab = ref<'login' | 'signup'>('login')
+const signupSuccess = ref(false)
 
 // 表單數據
 const email = ref('')
@@ -61,7 +62,7 @@ async function handleSubmit() {
     } else {
       await authStore.signUp(email.value, password.value)
       // 註冊成功提示
-      alert('註冊成功！請檢查您的電子郵件以驗證帳戶。')
+      signupSuccess.value = true
       // 切換到登入 tab
       activeTab.value = 'login'
       password.value = ''
@@ -77,6 +78,7 @@ async function handleSubmit() {
 function switchTab(tab: 'login' | 'signup') {
   activeTab.value = tab
   authStore.error = null
+  signupSuccess.value = false
   password.value = ''
   confirmPassword.value = ''
 }
@@ -132,6 +134,14 @@ function continueOffline() {
           class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"
         >
           {{ authStore.error }}
+        </div>
+
+        <!-- 註冊成功訊息 -->
+        <div
+          v-if="signupSuccess"
+          class="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm"
+        >
+          ✅ 註冊成功！請至信箱點擊確認連結以啟用帳戶，再回來登入。
         </div>
 
         <!-- Email 輸入 -->
