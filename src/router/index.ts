@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import { watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
@@ -83,12 +84,30 @@ const router = createRouter({
 
 // Navigation Guard（目前所有頁面都允許離線使用）
 // 未來可以根據需求調整 meta.requiresAuth
-router.beforeEach((to, _from, next) => {
+router.beforeEach(async (to, _from, next) => {
     const authStore = useAuthStore()
+    
+    // 等待 auth 初始化完成
+    if (!authStore.initialized) {
+        await new Promise<void>(resolve => {
+            const stop = watch(
+                () => authStore.initialized,
+                (val) => { 
+                    if (val) { 
+                        stop()
+                        resolve() 
+                    } 
+                }
+            )
+        })
+    }
     
     // 如果頁面需要認證但用戶未登入，導向 Auth 頁面
     if (to.meta.requiresAuth && !authStore.isLoggedIn) {
         next('/auth')
+    } else if (to.path === '/auth' && authStore.isLoggedIn) {
+        // 已登入時訪問 /auth 會被導向 /
+        next('/')
     } else {
         next()
     }

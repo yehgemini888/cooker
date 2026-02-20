@@ -2,12 +2,13 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { supabase, isSupabaseConfigured } from '@/lib/supabase'
 import type { User, Session, AuthChangeEvent } from '@supabase/supabase-js'
-
+import { useUserStore } from './user'
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<User | null>(null)
   const session = ref<Session | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
+  const initialized = ref(false)
 
   const isLoggedIn = computed(() => !!user.value)
 
@@ -15,6 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
   async function initialize() {
     if (!isSupabaseConfigured) {
       console.warn('Supabase not configured, skipping auth initialization')
+      initialized.value = true
       return
     }
     try {
@@ -31,6 +33,8 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (err: any) {
       console.error('Auth initialization error:', err)
       error.value = err.message
+    } finally {
+      initialized.value = true
     }
   }
 
@@ -76,6 +80,14 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const { error: err } = await supabase.auth.signOut()
       if (err) throw err
+      
+      // 登出成功後清空本地數據
+      user.value = null
+      session.value = null
+      
+      // 登出成功後重置 userStore 的數據加載標志
+      const userStore = useUserStore()
+      userStore.resetDataLoaded()
     } catch (err: any) {
       error.value = err.message
       throw err
@@ -89,6 +101,7 @@ export const useAuthStore = defineStore('auth', () => {
     session, 
     loading, 
     error, 
+    initialized,
     isLoggedIn, 
     initialize, 
     signUp, 

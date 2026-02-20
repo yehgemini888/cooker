@@ -77,7 +77,6 @@ export const useUserStore = defineStore('user', () => {
     const isSyncing = ref(false)
     const lastSyncTime = ref<Date | null>(null)
     const syncError = ref<string | null>(null)
-    const dataLoaded = ref(false)  // 新增：标记首次数据是否已加载
 
     // Baby Profile ID (從雲端載入)
     const babyProfileId = ref<string | null>(null)
@@ -205,12 +204,6 @@ export const useUserStore = defineStore('user', () => {
      * 從雲端載入資料
      */
     async function loadFromCloud() {
-        // 如果已加载过，跳过
-        if (dataLoaded.value) {
-            console.log('☑️ Cloud data already loaded, skipping')
-            return
-        }
-        
         const authStore = useAuthStore()
         if (!authStore.user) {
             console.log('User not logged in, skipping cloud load')
@@ -298,7 +291,6 @@ export const useUserStore = defineStore('user', () => {
                 }
 
                 lastSyncTime.value = new Date()
-                dataLoaded.value = true  // 新增：标记为已加载
                 console.log('✅ Cloud data loaded successfully')
             } else {
                 // 如果雲端沒有資料，但本地有資料，詢問是否上傳
@@ -454,14 +446,6 @@ export const useUserStore = defineStore('user', () => {
         }
     }
 
-    /**
-     * 重置 dataLoaded 状态（登出时调用）
-     */
-    function resetDataLoaded() {
-        dataLoaded.value = false
-        console.log('🔄 Data loaded flag reset')
-    }
-
     // 監聽變化並自動儲存到 LocalStorage + 雲端同步（debounce 2 秒）
     let syncTimeout: number | undefined
     watch(
@@ -501,7 +485,6 @@ export const useUserStore = defineStore('user', () => {
         lastSyncTime,
         syncError,
         babyProfileId,
-        dataLoaded,  // 新增
 
         // Getters
         getAgeInMonths,
@@ -524,6 +507,5 @@ export const useUserStore = defineStore('user', () => {
         // Cloud Sync Actions
         loadFromCloud,
         syncToCloud,
-        resetDataLoaded,  // 新增
     }
 })

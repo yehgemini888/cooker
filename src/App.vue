@@ -50,7 +50,11 @@ const showBottomNav = computed(() => {
 
     <!-- 已登入：顯示主要內容 -->
     <template v-else>
-      <RouterView />
+      <RouterView v-slot="{ Component }">
+        <KeepAlive :max="6">
+          <component :is="Component" :key="$route.name" />
+        </KeepAlive>
+      </RouterView>
       <BottomNavigation v-if="showBottomNav" />
     </template>
   </div>
