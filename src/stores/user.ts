@@ -298,21 +298,12 @@ export const useUserStore = defineStore('user', () => {
                 }
 
                 lastSyncTime.value = new Date()
-                dataLoaded.value = true  // 新增：标记为已加载
+                dataLoaded.value = true
                 console.log('✅ Cloud data loaded successfully')
             } else {
-                // 如果雲端沒有資料，但本地有資料，詢問是否上傳
-                const hasLocalData =
-                    babyName.value || birthday.value || Object.keys(ingredientStates.value).length > 0
-
-                if (hasLocalData) {
-                    const shouldUpload = confirm(
-                        '檢測到本地資料，是否上傳到雲端？\n（選擇「取消」將使用雲端資料覆蓋本地）'
-                    )
-                    if (shouldUpload) {
-                        await syncToCloud()
-                    }
-                }
+                // 雲端無資料（全新帳號）→ 清空本地資料，以雲端（空白）為準
+                clearAllData()
+                console.log('☁️ New account: cleared local data, starting fresh')
             }
         } catch (err: any) {
             console.error('❌ Failed to load from cloud:', err)
@@ -455,6 +446,22 @@ export const useUserStore = defineStore('user', () => {
     }
 
     /**
+     * 清除所有使用者資料（登出或切換帳號時呼叫）
+     */
+    function clearAllData() {
+        babyName.value = ''
+        birthday.value = ''
+        ingredientStates.value = {}
+        favoriteRecipes.value = new Set()
+        recipeRatings.value = {}
+        babyProfileId.value = null
+        dataLoaded.value = false
+        lastSyncTime.value = null
+        localStorage.removeItem(STORAGE_KEY)
+        console.log('🗑️ All user data cleared')
+    }
+
+    /**
      * 重置 dataLoaded 状态（登出时调用）
      */
     function resetDataLoaded() {
@@ -524,6 +531,7 @@ export const useUserStore = defineStore('user', () => {
         // Cloud Sync Actions
         loadFromCloud,
         syncToCloud,
-        resetDataLoaded,  // 新增
+        resetDataLoaded,
+        clearAllData,
     }
 })

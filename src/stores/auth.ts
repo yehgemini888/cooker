@@ -113,9 +113,9 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = null
       session.value = null
       
-      // 登出成功後重置 userStore 的數據加載標志
+      // 登出成功後清空所有使用者資料（含 localStorage）
       const userStore = useUserStore()
-      userStore.resetDataLoaded()
+      userStore.clearAllData()
     } catch (err: any) {
       error.value = err.message
       throw err
